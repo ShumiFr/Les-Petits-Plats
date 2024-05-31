@@ -31,10 +31,12 @@ searchButton.addEventListener("click", () => {
         return true;
       }
 
-      // Sinon, vérifiez si le mot est inclus dans les ingrédients
-      return recipe.ingredients.some((ingredient) => {
+      const isInName = recipe.name.toLowerCase().includes(part);
+      const isInIngredient = recipe.ingredients.some((ingredient) => {
         return ingredient.ingredient.toLowerCase().includes(part);
       });
+
+      return isInName || isInIngredient;
     });
   });
 
