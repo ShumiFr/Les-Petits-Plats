@@ -1,5 +1,7 @@
 import { recipes } from "./recipes.js";
 
+const numberRecipe = document.querySelector(".number-recipe");
+
 export function createCard(recipe) {
   let ingredientsHTML = "";
 
@@ -43,4 +45,5 @@ export function createCard(recipe) {
 recipes.forEach((recipe) => {
   const cardHTML = createCard(recipe);
   document.querySelector(".gallery").innerHTML += cardHTML;
+  numberRecipe.textContent = `${recipes.length} recettes`;
 });

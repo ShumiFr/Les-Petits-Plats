@@ -4,6 +4,7 @@ import { createCard } from "./card.js";
 const searchInput = document.querySelector(".form-control");
 const searchButton = document.querySelector(".research-btn");
 const gallery = document.querySelector(".gallery");
+const numberRecipe = document.querySelector(".number-recipe");
 
 // Liste des mots à ignorer
 const ignoreWords = ["de", "à", "et", "en", "d'", "au"];
@@ -15,6 +16,8 @@ function displayRecipes(recipes) {
     const cardHTML = createCard(recipe);
     gallery.innerHTML += cardHTML;
   });
+
+  numberRecipe.textContent = `${recipes.length} recettes`;
 }
 
 searchButton.addEventListener("click", () => {
