@@ -40,8 +40,13 @@ function filterRecipes() {
         const isInIngredient = recipe.ingredients.some((ingredient) => {
           return ingredient.ingredient.toLowerCase().includes(part);
         });
+        const isInDescription = recipe.description.toLowerCase().includes(part);
+        const isInUstensils = recipe.ustensils.some((ustensil) => {
+          return ustensil.toLowerCase().includes(part);
+        });
+        const isInAppliance = recipe.appliance.toLowerCase().includes(part);
 
-        return isInName || isInIngredient;
+        return isInName || isInIngredient || isInDescription || isInUstensils || isInAppliance;
       });
     });
   });
