@@ -10,9 +10,6 @@ const gallery = document.querySelector(".gallery");
 const numberRecipe = document.querySelector(".number-recipe");
 const activeFilters = [];
 
-// Mots à ignorer lors de la recherche
-const ignoreWords = ["de", "à", "et", "en", "d'", "au"];
-
 // Fonction qui prend un tableau de recettes, vide la gallerie, crée une carte pour chaque recette et les affiche dans la gallerie puis met a jour le nombre de recettes affichées
 function displayRecipes(recipes) {
   gallery.innerHTML = ""; // Videz la galerie
@@ -29,25 +26,18 @@ function displayRecipes(recipes) {
 function filterRecipes() {
   return recipes.filter((recipe) => {
     return activeFilters.every((filter) => {
-      const filterParts = filter.split(" ");
-
-      return filterParts.every((part) => {
-        if (ignoreWords.includes(part)) {
-          return true;
-        }
-
-        const isInName = recipe.name.toLowerCase().includes(part);
-        const isInIngredient = recipe.ingredients.some((ingredient) => {
-          return ingredient.ingredient.toLowerCase().includes(part);
-        });
-        const isInDescription = recipe.description.toLowerCase().includes(part);
-        const isInUstensils = recipe.ustensils.some((ustensil) => {
-          return ustensil.toLowerCase().includes(part);
-        });
-        const isInAppliance = recipe.appliance.toLowerCase().includes(part);
-
-        return isInName || isInIngredient || isInDescription || isInUstensils || isInAppliance;
+      const regex = new RegExp(`\\b${filter}\\b`, "i"); // Crée une expression régulière qui vérifie si le filtre est un mot entier (Entouré par des espace ou qui est au début ou à la fin de la chaine de caractère)
+      const isInName = regex.test(recipe.name);
+      const isInIngredient = recipe.ingredients.some((ingredient) => {
+        return regex.test(ingredient.ingredient);
       });
+      const isInDescription = regex.test(recipe.description);
+      const isInUstensils = recipe.ustensils.some((ustensil) => {
+        return regex.test(ustensil);
+      });
+      const isInAppliance = regex.test(recipe.appliance);
+
+      return isInName || isInIngredient || isInDescription || isInUstensils || isInAppliance;
     });
   });
 }
