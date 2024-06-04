@@ -45,15 +45,23 @@ function filterRecipes() {
 // Fonction qui créé un filtre actif pour chaque mot clé donné, les ajoutes à la liste des filtres actifs et les affiches dans le conteneur des filtres actifs
 function displayActiveFilters(keyword) {
   const filtersContainer = document.querySelector(".active-filters-container");
-  const activeFilterHTML = createActiveFilter(
-    keyword,
-    activeFilters,
-    filterRecipes,
-    displayRecipes
-  );
-  filtersContainer.appendChild(activeFilterHTML);
 
-  activeFilters.push(keyword);
+  // Divisez le mot-clé par des virgules et supprimez les espaces avant et après chaque élément
+  const keywords = keyword.split(",").map((word) => word.trim());
+
+  keywords.forEach((word) => {
+    if (!activeFilters.includes(word)) {
+      const activeFilterHTML = createActiveFilter(
+        word,
+        activeFilters,
+        filterRecipes,
+        displayRecipes
+      );
+      filtersContainer.appendChild(activeFilterHTML);
+
+      activeFilters.push(word);
+    }
+  });
 }
 
 // Ecouteur d'evenement au bouton de recherche. Lorsqu'on clique sur le bouton de recherche, on récupère la valeur de l'input de recherche, on l'affiche comme un filtre actif, on filtre les recettes et on les affiche
