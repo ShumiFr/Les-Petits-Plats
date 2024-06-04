@@ -1,10 +1,12 @@
 import { recipes } from "./recipes.js";
 import { createCard } from "./card.js";
+import { createActiveFilter } from "./filterActive.js";
 
 const searchInput = document.querySelector(".form-control");
 const searchButton = document.querySelector(".research-btn");
 const gallery = document.querySelector(".gallery");
 const numberRecipe = document.querySelector(".number-recipe");
+const activeFilters = [];
 
 // Liste des mots à ignorer
 const ignoreWords = ["de", "à", "et", "en", "d'", "au"];
@@ -20,23 +22,35 @@ function displayRecipes(recipes) {
   numberRecipe.textContent = `${recipes.length} recettes`;
 }
 
+function displayActiveFilters(keyword) {
+  const filtersContainer = document.querySelector(".active-filters-container");
+  const activeFilterHTML = createActiveFilter(keyword);
+  filtersContainer.appendChild(activeFilterHTML);
+
+  activeFilters.push(keyword);
+}
+
 searchButton.addEventListener("click", () => {
   const keyword = searchInput.value.toLowerCase();
-  const keywordParts = keyword.split(" ");
+
+  displayActiveFilters(keyword);
 
   const filteredRecipes = recipes.filter((recipe) => {
-    return keywordParts.every((part) => {
-      // Si le mot fait partie des mots à ignorer, retournez true
-      if (ignoreWords.includes(part)) {
-        return true;
-      }
+    return activeFilters.every((filter) => {
+      const filterParts = filter.split(" ");
 
-      const isInName = recipe.name.toLowerCase().includes(part);
-      const isInIngredient = recipe.ingredients.some((ingredient) => {
-        return ingredient.ingredient.toLowerCase().includes(part);
+      return filterParts.every((part) => {
+        if (ignoreWords.includes(part)) {
+          return true;
+        }
+
+        const isInName = recipe.name.toLowerCase().includes(part);
+        const isInIngredient = recipe.ingredients.some((ingredient) => {
+          return ingredient.ingredient.toLowerCase().includes(part);
+        });
+
+        return isInName || isInIngredient;
       });
-
-      return isInName || isInIngredient;
     });
   });
 

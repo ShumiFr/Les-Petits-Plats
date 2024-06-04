@@ -97,18 +97,63 @@ ul {
 
 /* -------------------- Filters --------------------- */
 
+.filters {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
 .filter {
   display: flex;
   align-items: center;
+  width: 90%;
   flex-direction: row;
   margin-top: 300px;
   justify-content: space-between;
-  margin-bottom: 80px;
+  margin-bottom: 30px;
+}
+
+.filter-active {
+  background: #ffd15b;
+  display: flex;
+  align-items: center;
+  border: none;
+  color: #111111;
+  padding: 25px;
+  margin: 0 25px 0 45px;
+  border-radius: 15px;
+  font-family: "Manrope", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.filter-active button {
+  border: none;
+  background: #ffd15b;
+}
+
+.filter-active p {
+  margin-bottom: 0;
+  margin-right: 70px;
+}
+
+.filter-active i {
+  font-size: 25px;
+}
+
+.active-filters-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 90%;
+  margin-bottom: 70px;
 }
 
 .filter-dropdowns {
   display: flex;
-  margin-left: 90px;
   flex-direction: row;
 }
 
@@ -144,7 +189,6 @@ ul {
   font-size: 30px;
   margin-right: 120px;
 }
-
 /* -------------------- Gallery --------------------- */
 
 .gallery {
