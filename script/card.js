@@ -2,6 +2,7 @@ import { recipes } from "./recipes.js";
 
 const numberRecipe = document.querySelector(".number-recipe");
 
+// Fonction qui créé une carte
 export function createCard(recipe) {
   let ingredientsHTML = "";
 
