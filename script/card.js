@@ -2,7 +2,6 @@ import { recipes } from "./recipes.js";
 
 const numberRecipe = document.querySelector(".number-recipe");
 
-// Fonction qui créé une carte
 export function createCard(recipe) {
   let ingredientsHTML = "";
 
@@ -42,7 +41,6 @@ export function createCard(recipe) {
   `;
 }
 
-// Créez une carte pour chaque recette
 recipes.forEach((recipe) => {
   const cardHTML = createCard(recipe);
   document.querySelector(".gallery").innerHTML += cardHTML;

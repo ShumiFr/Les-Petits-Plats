@@ -1,8 +1,6 @@
-// Fonction qui créé un filtre actif pour chaque mot clé donné, les ajoutes à la liste des filtres actifs et les affiches dans le conteneur des filtres actifs
 export function createActiveFilter(keyword, activeFilters, filterRecipes, displayRecipes) {
   let keywordUcFirst = strUcFirst(keyword);
 
-  // Fonction qui met en majuscule la première lettre d'une chaîne de caractères
   function strUcFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
@@ -16,7 +14,6 @@ export function createActiveFilter(keyword, activeFilters, filterRecipes, displa
           </button>
         `;
 
-  // Ecouteur d'evenement au bouton de suppression de filtre. Lorsqu'on clique sur le bouton de suppression de filtre, on supprime le filtre actif, on le retire de la liste des filtres actifs, on filtre les recettes et on les affiche
   filterDiv.querySelector(".filter-delete").addEventListener("click", function () {
     filterDiv.remove();
 

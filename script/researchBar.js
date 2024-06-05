@@ -10,7 +10,8 @@ const gallery = document.querySelector(".gallery");
 const numberRecipe = document.querySelector(".number-recipe");
 const activeFilters = [];
 
-// Fonction qui prend un tableau de recettes, vide la gallerie, crée une carte pour chaque recette et les affiche dans la gallerie puis met a jour le nombre de recettes affichées
+/* ---------------------------------------------------------------- Fonctions ---------------------------------------------------------------- */
+
 function displayRecipes(recipes) {
   gallery.innerHTML = ""; // Videz la galerie
 
@@ -22,27 +23,29 @@ function displayRecipes(recipes) {
   numberRecipe.textContent = `${recipes.length} recettes`;
 }
 
-// Fonction qui vérifie si tous les filtres actifs sont présents dans le nom ou dans l'un des ingrédients de la recette
 function filterRecipes() {
   return recipes.filter((recipe) => {
     return activeFilters.every((filter) => {
-      const regex = new RegExp(`\\b${filter}\\b`, "i"); // Crée une expression régulière qui vérifie si le filtre est un mot entier (Entouré par des espace ou qui est au début ou à la fin de la chaine de caractère)
-      const isInName = regex.test(recipe.name);
+      const isInName = recipe.name
+        .toLowerCase()
+        .split(" ")
+        .some((word) => word.includes(filter));
+      const isInDescription = recipe.description
+        .toLowerCase()
+        .split(" ")
+        .some((word) => word.includes(filter));
       const isInIngredient = recipe.ingredients.some((ingredient) => {
-        return regex.test(ingredient.ingredient);
+        return ingredient.ingredient
+          .toLowerCase()
+          .split(" ")
+          .some((word) => word.includes(filter));
       });
-      const isInDescription = regex.test(recipe.description);
-      const isInUstensils = recipe.ustensils.some((ustensil) => {
-        return regex.test(ustensil);
-      });
-      const isInAppliance = regex.test(recipe.appliance);
 
-      return isInName || isInIngredient || isInDescription || isInUstensils || isInAppliance;
+      return isInName || isInIngredient || isInDescription;
     });
   });
 }
 
-// Fonction qui créé un filtre actif pour chaque mot clé donné, les ajoutes à la liste des filtres actifs et les affiches dans le conteneur des filtres actifs
 function displayActiveFilters(keyword) {
   const filtersContainer = document.querySelector(".active-filters-container");
 
@@ -64,7 +67,8 @@ function displayActiveFilters(keyword) {
   });
 }
 
-// Ecouteur d'evenement au bouton de recherche. Lorsqu'on clique sur le bouton de recherche, on récupère la valeur de l'input de recherche, on l'affiche comme un filtre actif, on filtre les recettes et on les affiche
+/* ---------------------------------------------------------- Ecouteurs d'évènements --------------------------------------------------------- */
+
 searchButton.addEventListener("click", () => {
   const keyword = searchInput.value.toLowerCase();
 
@@ -74,4 +78,24 @@ searchButton.addEventListener("click", () => {
 
   displayRecipes(filteredRecipes);
   console.log(activeFilters);
+});
+
+searchInput.addEventListener("input", () => {
+  const keyword = searchInput.value.toLowerCase();
+
+  if (keyword.length >= 3) {
+    const filteredRecipes = recipes.filter((recipe) => {
+      const isInName = recipe.name.toLowerCase().includes(keyword);
+      const isInDescription = recipe.description.toLowerCase().includes(keyword);
+      const isInIngredient = recipe.ingredients.some((ingredient) => {
+        return ingredient.ingredient.toLowerCase().includes(keyword);
+      });
+
+      return isInName || isInIngredient || isInDescription;
+    });
+
+    displayRecipes(filteredRecipes);
+  } else if (keyword.length <= 3) {
+    displayRecipes(recipes);
+  }
 });
