@@ -8,7 +8,7 @@ const searchInput = document.querySelector(".form-control");
 const searchButton = document.querySelector(".research-btn");
 const gallery = document.querySelector(".gallery");
 const numberRecipe = document.querySelector(".number-recipe");
-const activeFilters = [];
+export const activeFilters = [];
 
 /* ---------------------------------------------------------------- Fonctions ---------------------------------------------------------------- */
 
@@ -46,7 +46,7 @@ function filterRecipes() {
   });
 }
 
-function displayActiveFilters(keyword) {
+export function displayActiveFilters(keyword) {
   const filtersContainer = document.querySelector(".active-filters-container");
 
   // Divisez le mot-clé par des virgules et supprimez les espaces avant et après chaque élément

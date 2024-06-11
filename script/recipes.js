@@ -62,7 +62,7 @@ export const recipes = [
         quantity: 5,
       },
       {
-        ingredient: "Lait de Coco",
+        ingredient: "Lait de coco",
         quantity: 100,
         unit: "ml",
       },
@@ -219,7 +219,7 @@ export const recipes = [
         unit: "cl",
       },
       {
-        ingredient: "Sucre en Poudre",
+        ingredient: "Sucre en poudre",
         quantity: 100,
         unit: "grammes",
       },
@@ -297,7 +297,7 @@ export const recipes = [
         quantity: 2,
       },
       {
-        ingredient: "Sucre en Poudre",
+        ingredient: "Sucre en poudre",
         quantity: "110",
         unit: "grammes",
       },
@@ -602,7 +602,7 @@ export const recipes = [
         unit: "tiges",
       },
       {
-        ingredient: "huile d'olives",
+        ingredient: "huile d'olive",
         quantity: 2,
         unit: "cuillère à soupe",
       },
@@ -961,7 +961,7 @@ export const recipes = [
         quantity: 1,
       },
       {
-        ingredient: "Huile d'olives",
+        ingredient: "Huile d'olive",
       },
       {
         ingredient: "Oignon",
@@ -1356,7 +1356,7 @@ export const recipes = [
         unit: "grammes",
       },
       {
-        ingredient: "Huile d'olives",
+        ingredient: "Huile d'olive",
         quantity: 25,
         unit: "cl",
       },
@@ -1365,7 +1365,7 @@ export const recipes = [
         quantity: 1,
       },
       {
-        ingredient: "Coulis de tomates",
+        ingredient: "Coulis de tomate",
         quantity: 20,
         unit: "cl",
       },

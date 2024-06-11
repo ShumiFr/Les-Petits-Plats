@@ -1,9 +1,9 @@
+export function strUcFirst(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export function createActiveFilter(keyword, activeFilters, filterRecipes, displayRecipes) {
   let keywordUcFirst = strUcFirst(keyword);
-
-  function strUcFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
 
   const filterDiv = document.createElement("div");
   filterDiv.classList.add("filter-active");

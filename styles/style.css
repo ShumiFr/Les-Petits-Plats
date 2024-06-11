@@ -158,7 +158,8 @@ ul {
 }
 
 .dropdown {
-  margin: 0 20px;
+  width: 250px;
+  margin-right: 80px;
 }
 
 .dropdown button {
@@ -168,11 +169,14 @@ ul {
   border: none;
   color: #111111;
   padding: 25px;
-  margin: 0 25px 0 25px;
   border-radius: 15px;
   font-family: "Manrope", sans-serif;
   font-size: 20px;
   font-weight: 500;
+}
+
+.dropdown button:first-child {
+  margin-left: 40px;
 }
 
 .dropdown button p {
@@ -182,6 +186,121 @@ ul {
 
 .dropdown button i {
   font-size: 20px;
+}
+
+.dropdown button:hover {
+  background: #fff;
+  color: #111111;
+}
+
+.dropdown-items {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.dropdown-item {
+  padding: 5px 25px;
+}
+
+.dropdown-item:hover {
+  background: #ffd15b;
+}
+
+.dropdown-active-items {
+  display: flex;
+  width: 100%;
+  padding: 10px 25px;
+  margin-top: 20px;
+  background: #ffd15b;
+  cursor: pointer;
+}
+
+.dropdown-active-items li {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdown-active-items p {
+  margin: 0;
+  font-weight: 500;
+  text-shadow: 0 0 0 transparent;
+  transition: text-shadow 0.5s ease;
+}
+
+.dropdown-active-items button {
+  background: #1b1b1b;
+  color: #ffd15b;
+  padding: 5px 7px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.dropdown-active-items:hover button {
+  opacity: 1;
+}
+
+.dropdown-active-items:hover p {
+  text-shadow: 0 0 1px #000;
+}
+
+.dropdown-active-items button i {
+  font-size: 14px;
+}
+
+.dropdown-menu {
+  width: 100%;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 40px;
+  top: 60px;
+  border: none;
+  max-height: 400px;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.dropdown-menu .input-group {
+  width: 85%;
+  border: 1px solid #7a7a7a;
+  border-radius: 0;
+}
+
+.dropdown-menu .form-control {
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-menu .form-control:focus {
+  border: none;
+  outline: 0;
+  box-shadow: none;
+}
+
+.dropdown-menu .input-group button {
+  padding: 0;
+}
+
+.dropdown-menu .input-group button img {
+  width: 20px;
+  margin-left: 5px;
+  height: auto;
+}
+
+.dropdown-menu.show {
+  display: flex;
+}
+
+.dropdown-toggle {
+  width: 100%;
+}
+
+.dropdown-toggle:after {
+  display: none;
 }
 
 .number-recipe {
