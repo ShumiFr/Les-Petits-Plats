@@ -2,11 +2,34 @@ export function strUcFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function removeActiveFilter(keyword, activeFilters, filterRecipes, displayRecipes) {
+  const index = activeFilters.indexOf(keyword);
+  if (index > -1) {
+    activeFilters.splice(index, 1);
+  }
+
+  const filterTag = document.getElementById(`filter-tag-${keyword}`);
+  if (filterTag) {
+    filterTag.remove();
+  }
+
+  const dropdownFilter = document.querySelector(`[data-filter="${keyword}"]`);
+
+  if (dropdownFilter) {
+    dropdownFilter.remove();
+  }
+
+  const filteredRecipes = filterRecipes();
+  displayRecipes(filteredRecipes);
+}
+
 export function createActiveFilter(keyword, activeFilters, filterRecipes, displayRecipes) {
   let keywordUcFirst = strUcFirst(keyword);
 
   const filterDiv = document.createElement("div");
   filterDiv.classList.add("filter-active");
+
+  filterDiv.id = `filter-tag-${keyword}`;
   filterDiv.innerHTML = `
           <p>${keywordUcFirst}</p>
           <button class="filter-delete">
@@ -16,16 +39,7 @@ export function createActiveFilter(keyword, activeFilters, filterRecipes, displa
 
   filterDiv.querySelector(".filter-delete").addEventListener("click", function () {
     filterDiv.remove();
-
-    const index = activeFilters.indexOf(keyword);
-    if (index > -1) {
-      activeFilters.splice(index, 1);
-    }
-
-    const filteredRecipes = filterRecipes();
-
-    displayRecipes(filteredRecipes);
-    console.log(activeFilters);
+    removeActiveFilter(keyword, activeFilters, filterRecipes, displayRecipes);
   });
 
   return filterDiv;

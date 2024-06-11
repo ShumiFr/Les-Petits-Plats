@@ -2,8 +2,13 @@ import { recipes } from "./recipes.js";
 import { strUcFirst } from "./filterActive.js";
 import { displayActiveFilters } from "./researchBar.js";
 import { activeFilters } from "./researchBar.js";
+import { removeActiveFilter } from "./filterActive.js";
+import { filterRecipes } from "./researchBar.js";
+import { displayRecipes } from "./researchBar.js";
 
 const dropdownContainer = document.querySelector(".filter-dropdowns");
+
+/* ----------------- Fonctions ----------------- */
 
 function generateDropdownHTML(props, items) {
   const dropdownItems = items
@@ -39,10 +44,20 @@ function generateDropdownHTML(props, items) {
   return dropdownHTML;
 }
 
-function handleDropdownItemClick(event, items, activeFilters, updateDropdownItems) {
+function handleDropdownItemClick(
+  event,
+  items,
+  activeFilters,
+  updateDropdownItems,
+  dropdown,
+  input,
+  dropdownItemContainer,
+  filterRecipes,
+  displayRecipes
+) {
   if (event.target.matches(".dropdown-item")) {
     event.preventDefault();
-    const selectedItem = event.target.textContent;
+    const selectedItem = event.target.textContent.toLowerCase();
     displayActiveFilters(selectedItem);
     if (!activeFilters.includes(selectedItem)) {
       activeFilters.push(selectedItem);
@@ -51,11 +66,69 @@ function handleDropdownItemClick(event, items, activeFilters, updateDropdownItem
     if (index > -1) {
       items.splice(index, 1);
     }
-    updateDropdownItems();
+    updateDropdownItems(
+      items,
+      activeFilters,
+      dropdown,
+      input,
+      dropdownItemContainer,
+      filterRecipes,
+      displayRecipes
+    );
   }
 }
 
-export function createDropdown(props, items, activeFilters) {
+export function updateDropdownItems(
+  items,
+  activeFilters,
+  dropdown,
+  input,
+  dropdownItemContainer,
+  filterRecipes,
+  displayRecipes
+) {
+  const filteredItems = items.filter((item) =>
+    item.toLowerCase().includes(input.value.toLowerCase())
+  );
+
+  const activeItemsContainer = dropdown.querySelector(".dropdown-active-items");
+  activeItemsContainer.innerHTML = activeFilters.map(
+    (filter) =>
+      ` <li data-filter="${filter.toLowerCase()}">
+          <p>${filter}</p>
+          <button class="filter-delete"><i class="fa-solid fa-xmark"></i></button>
+        </li>
+      `
+  );
+
+  activeItemsContainer.querySelectorAll(".filter-delete").forEach((button, index) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const filter = activeFilters[index];
+      removeActiveFilter(filter, activeFilters, filterRecipes, displayRecipes);
+      updateDropdownItems(
+        items,
+        activeFilters,
+        dropdown,
+        input,
+        dropdownItemContainer,
+        filterRecipes,
+        displayRecipes
+      );
+    });
+  });
+
+  dropdownItemContainer.innerHTML = filteredItems
+    .map((item) => {
+      const isActiveFilter = activeFilters.includes(item);
+      return `<li><a class="dropdown-item ${
+        isActiveFilter ? "active" : ""
+      }" data-filter="${item.toLowerCase()}" href="#">${item}</a></li>`;
+    })
+    .join("");
+}
+
+export function createDropdown(props, items, activeFilters, filterRecipes, displayRecipes) {
   const dropdownHTML = generateDropdownHTML(props, items, activeFilters);
   const dropdown = document.createElement("div");
   dropdown.classList.add("dropdown");
@@ -71,39 +144,37 @@ export function createDropdown(props, items, activeFilters) {
   const dropdownItemContainer = dropdown.querySelector(".dropdown-items");
   const input = dropdown.querySelector(".form-control");
 
-  function updateDropdownItems() {
-    const filteredItems = items.filter((item) =>
-      item.toLowerCase().includes(input.value.toLowerCase())
-    );
-
-    const activeItemsContainer = dropdown.querySelector(".dropdown-active-items");
-    activeItemsContainer.innerHTML = activeFilters.map(
-      (filter) =>
-        ` <li>
-            <p>${filter}</p>
-            <button class="filter-delete"><i class="fa-solid fa-xmark"></i></button>
-          </li>
-        `
-    );
-
-    dropdownItemContainer.innerHTML = filteredItems
-      .map((item) => {
-        const isActiveFilter = activeFilters.includes(item);
-        return `<li><a class="dropdown-item ${
-          isActiveFilter ? "active" : ""
-        }" href="#">${item}</a></li>`;
-      })
-      .join("");
-  }
-
-  input.addEventListener("input", updateDropdownItems);
+  input.addEventListener("input", () =>
+    updateDropdownItems(
+      items,
+      activeFilters,
+      dropdown,
+      input,
+      dropdownItemContainer,
+      filterRecipes,
+      displayRecipes
+    )
+  );
 
   dropdownItemContainer.addEventListener("click", (event) => {
-    handleDropdownItemClick(event, items, activeFilters, updateDropdownItems);
+    handleDropdownItemClick(event, items, activeFilters, () =>
+      updateDropdownItems(
+        items,
+        activeFilters,
+        dropdown,
+        input,
+        dropdownItemContainer,
+        filterRecipes,
+        displayRecipes
+      )
+    );
+    console.log(activeFilters);
   });
 
   return dropdown;
 }
+
+/* ----------------- Creation des filtres de recherche avancée ----------------- */
 
 const ingredients = recipes.reduce((acc, recipe) => {
   recipe.ingredients.forEach((ingredient) => {
@@ -133,6 +204,18 @@ const appliances = recipes.reduce((acc, recipe) => {
   return acc;
 }, []);
 
-dropdownContainer.appendChild(createDropdown({ title: "Ingrédients" }, ingredients, activeFilters));
-dropdownContainer.appendChild(createDropdown({ title: "Ustensiles" }, utensils, activeFilters));
-dropdownContainer.appendChild(createDropdown({ title: "Appareils" }, appliances, activeFilters));
+dropdownContainer.appendChild(
+  createDropdown(
+    { title: "Ingrédients" },
+    ingredients,
+    activeFilters,
+    filterRecipes,
+    displayRecipes
+  )
+);
+dropdownContainer.appendChild(
+  createDropdown({ title: "Ustensiles" }, utensils, activeFilters, filterRecipes, displayRecipes)
+);
+dropdownContainer.appendChild(
+  createDropdown({ title: "Appareils" }, appliances, activeFilters, filterRecipes, displayRecipes)
+);

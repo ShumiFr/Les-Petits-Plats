@@ -12,7 +12,7 @@ export const activeFilters = [];
 
 /* ---------------------------------------------------------------- Fonctions ---------------------------------------------------------------- */
 
-function displayRecipes(recipes) {
+export function displayRecipes(recipes) {
   gallery.innerHTML = ""; // Videz la galerie
 
   recipes.forEach((recipe) => {
@@ -23,22 +23,13 @@ function displayRecipes(recipes) {
   numberRecipe.textContent = `${recipes.length} recettes`;
 }
 
-function filterRecipes() {
+export function filterRecipes() {
   return recipes.filter((recipe) => {
     return activeFilters.every((filter) => {
-      const isInName = recipe.name
-        .toLowerCase()
-        .split(" ")
-        .some((word) => word.includes(filter));
-      const isInDescription = recipe.description
-        .toLowerCase()
-        .split(" ")
-        .some((word) => word.includes(filter));
+      const isInName = recipe.name.toLowerCase().includes(filter);
+      const isInDescription = recipe.description.toLowerCase().includes(filter);
       const isInIngredient = recipe.ingredients.some((ingredient) => {
-        return ingredient.ingredient
-          .toLowerCase()
-          .split(" ")
-          .some((word) => word.includes(filter));
+        return ingredient.ingredient.toLowerCase().includes(filter);
       });
 
       return isInName || isInIngredient || isInDescription;
@@ -65,6 +56,12 @@ export function displayActiveFilters(keyword) {
       activeFilters.push(word);
     }
   });
+
+  // Filtrer les recettes chaque fois qu'un filtre est ajouté
+  const filteredRecipes = filterRecipes();
+
+  // Afficher les recettes filtrées
+  displayRecipes(filteredRecipes);
 }
 
 /* ---------------------------------------------------------- Ecouteurs d'évènements --------------------------------------------------------- */
