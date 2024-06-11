@@ -14,7 +14,6 @@ function generateDropdownHTML(props, items) {
   const dropdownItems = items
     .map((item) => `<li><a class="dropdown-item" href="#">${item}</a></li>`)
     .join("");
-  console.log(items);
 
   const dropdownHTML = `
     <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -87,19 +86,23 @@ export function updateDropdownItems(
   filterRecipes,
   displayRecipes
 ) {
-  const filteredItems = items.filter((item) =>
-    item.toLowerCase().includes(input.value.toLowerCase())
+  const filteredItems = items.filter(
+    (item) =>
+      item.toLowerCase().includes(input.value.toLowerCase()) &&
+      !activeFilters.includes(item.toLowerCase())
   );
 
   const activeItemsContainer = dropdown.querySelector(".dropdown-active-items");
-  activeItemsContainer.innerHTML = activeFilters.map(
-    (filter) =>
-      ` <li data-filter="${filter.toLowerCase()}">
-          <p>${filter}</p>
+  activeItemsContainer.innerHTML = activeFilters
+    .map(
+      (filter) =>
+        ` <li data-filter="${filter.toLowerCase()}">
+          <p>${strUcFirst(filter)}</p>
           <button class="filter-delete"><i class="fa-solid fa-xmark"></i></button>
         </li>
       `
-  );
+    )
+    .join("");
 
   activeItemsContainer.querySelectorAll(".filter-delete").forEach((button, index) => {
     button.addEventListener("click", (event) => {
@@ -168,7 +171,6 @@ export function createDropdown(props, items, activeFilters, filterRecipes, displ
         displayRecipes
       )
     );
-    console.log(activeFilters);
   });
 
   return dropdown;

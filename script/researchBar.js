@@ -74,7 +74,6 @@ searchButton.addEventListener("click", () => {
   const filteredRecipes = filterRecipes();
 
   displayRecipes(filteredRecipes);
-  console.log(activeFilters);
 });
 
 searchInput.addEventListener("input", () => {
