@@ -1,43 +1,21 @@
 // Importation des modules nécessaires
 import { recipes } from "./recipes.js";
-import { createCard } from "./card.js";
+import { globalResearch, filtersResearch, reconstructDOM } from "./research.js";
 import { createActiveFilter } from "./filterActive.js";
+import { activeFilters } from "./research.js";
 
 // Sélection des éléments du DOM
 const searchInput = document.querySelector(".form-control");
 const searchButton = document.querySelector(".research-btn");
-const gallery = document.querySelector(".gallery");
-const numberRecipe = document.querySelector(".number-recipe");
-export const activeFilters = [];
+const advancedFilters = document.querySelectorAll(".dropdown-item");
 
 /* ---------------------------------------------------------------- Fonctions ---------------------------------------------------------------- */
 
-export function displayRecipes(recipes) {
-  gallery.innerHTML = ""; // Videz la galerie
-
-  recipes.forEach((recipe) => {
-    const cardHTML = createCard(recipe);
-    gallery.innerHTML += cardHTML;
-  });
-
-  numberRecipe.textContent = `${recipes.length} recettes`;
+export function getActiveFilters() {
+  return activeFilters;
 }
 
-export function filterRecipes() {
-  return recipes.filter((recipe) => {
-    return activeFilters.every((filter) => {
-      const isInName = recipe.name.toLowerCase().includes(filter);
-      const isInDescription = recipe.description.toLowerCase().includes(filter);
-      const isInIngredient = recipe.ingredients.some((ingredient) => {
-        return ingredient.ingredient.toLowerCase().includes(filter);
-      });
-
-      return isInName || isInIngredient || isInDescription;
-    });
-  });
-}
-
-export function displayActiveFilters(keyword) {
+export function displayActiveFilters(keyword, createFilter = true) {
   const filtersContainer = document.querySelector(".active-filters-container");
 
   // Divisez le mot-clé par des virgules et supprimez les espaces avant et après chaque élément
@@ -45,23 +23,21 @@ export function displayActiveFilters(keyword) {
 
   keywords.forEach((word) => {
     if (!activeFilters.includes(word)) {
-      const activeFilterHTML = createActiveFilter(
-        word,
-        activeFilters,
-        filterRecipes,
-        displayRecipes
-      );
-      filtersContainer.appendChild(activeFilterHTML);
+      if (createFilter) {
+        const activeFilterHTML = createActiveFilter(word, activeFilters);
+        filtersContainer.appendChild(activeFilterHTML);
+      }
 
       activeFilters.push(word);
     }
   });
 
   // Filtrer les recettes chaque fois qu'un filtre est ajouté
-  const filteredRecipes = filterRecipes();
+  const d1 = globalResearch(searchInput, recipes);
+  const d2 = filtersResearch(activeFilters, d1);
 
   // Afficher les recettes filtrées
-  displayRecipes(filteredRecipes);
+  reconstructDOM(d2);
 }
 
 /* ---------------------------------------------------------- Ecouteurs d'évènements --------------------------------------------------------- */
@@ -69,29 +45,35 @@ export function displayActiveFilters(keyword) {
 searchButton.addEventListener("click", () => {
   const keyword = searchInput.value.toLowerCase();
 
-  displayActiveFilters(keyword);
-
-  const filteredRecipes = filterRecipes();
-
-  displayRecipes(filteredRecipes);
+  displayActiveFilters(keyword, false);
 });
 
 searchInput.addEventListener("input", () => {
   const keyword = searchInput.value.toLowerCase();
 
   if (keyword.length >= 3) {
-    const filteredRecipes = recipes.filter((recipe) => {
-      const isInName = recipe.name.toLowerCase().includes(keyword);
-      const isInDescription = recipe.description.toLowerCase().includes(keyword);
-      const isInIngredient = recipe.ingredients.some((ingredient) => {
-        return ingredient.ingredient.toLowerCase().includes(keyword);
-      });
-
-      return isInName || isInIngredient || isInDescription;
-    });
-
-    displayRecipes(filteredRecipes);
-  } else if (keyword.length <= 3) {
-    displayRecipes(recipes);
+    const d1 = globalResearch(searchInput, recipes);
+    const d2 = filtersResearch(activeFilters, d1);
+    reconstructDOM(d2);
+  } else {
+    // Si la longueur du mot-clé est inférieure à 3, affichez toutes les recettes
+    const d2 = filtersResearch(activeFilters, recipes);
+    reconstructDOM(d2);
   }
+});
+
+// Ajoutez un écouteur d'événements pour chaque filtre avancé
+advancedFilters.forEach((filter) => {
+  filter.addEventListener("click", () => {
+    const keyword = searchInput.value.toLowerCase();
+
+    // Effectuez une recherche globale avec le mot-clé de la barre de recherche
+    const d1 = globalResearch(searchInput, recipes);
+
+    // Appliquez les filtres avancés aux résultats de la recherche globale
+    const d2 = filtersResearch(activeFilters, d1);
+
+    // Affichez les recettes filtrées
+    reconstructDOM(d2);
+  });
 });

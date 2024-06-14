@@ -1,12 +1,11 @@
 import { recipes } from "./recipes.js";
-import { strUcFirst } from "./filterActive.js";
+import { strUcFirst, removeActiveFilter } from "./filterActive.js";
 import { displayActiveFilters } from "./researchBar.js";
-import { activeFilters } from "./researchBar.js";
-import { removeActiveFilter } from "./filterActive.js";
-import { filterRecipes } from "./researchBar.js";
-import { displayRecipes } from "./researchBar.js";
+import { globalResearch, filtersResearch, reconstructDOM } from "./research.js";
+import { activeFilters } from "./research.js";
 
 const dropdownContainer = document.querySelector(".filter-dropdowns");
+const searchInput = document.querySelector(".form-control");
 
 /* ----------------- Fonctions ----------------- */
 
@@ -50,30 +49,34 @@ function handleDropdownItemClick(
   updateDropdownItems,
   dropdown,
   input,
-  dropdownItemContainer,
-  filterRecipes,
-  displayRecipes
+  dropdownItemContainer
 ) {
   if (event.target.matches(".dropdown-item")) {
     event.preventDefault();
+
     const selectedItem = event.target.textContent.toLowerCase();
     displayActiveFilters(selectedItem);
+
     if (!activeFilters.includes(selectedItem)) {
       activeFilters.push(selectedItem);
     }
+
     const index = items.indexOf(selectedItem);
     if (index > -1) {
       items.splice(index, 1);
     }
+
     updateDropdownItems(
       items,
       activeFilters,
       dropdown,
       input,
-      dropdownItemContainer,
-      filterRecipes,
-      displayRecipes
+      dropdownItemContainer
     );
+
+    const d1 = globalResearch(input, recipes);
+    const d2 = filtersResearch(activeFilters, d1);
+    reconstructDOM(d2);
   }
 }
 
@@ -82,9 +85,7 @@ export function updateDropdownItems(
   activeFilters,
   dropdown,
   input,
-  dropdownItemContainer,
-  filterRecipes,
-  displayRecipes
+  dropdownItemContainer
 ) {
   const filteredItems = items.filter(
     (item) =>
@@ -104,22 +105,26 @@ export function updateDropdownItems(
     )
     .join("");
 
-  activeItemsContainer.querySelectorAll(".filter-delete").forEach((button, index) => {
-    button.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const filter = activeFilters[index];
-      removeActiveFilter(filter, activeFilters, filterRecipes, displayRecipes);
-      updateDropdownItems(
-        items,
-        activeFilters,
-        dropdown,
-        input,
-        dropdownItemContainer,
-        filterRecipes,
-        displayRecipes
-      );
+  activeItemsContainer
+    .querySelectorAll(".filter-delete")
+    .forEach((button, index) => {
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        const filter = activeFilters[index];
+        removeActiveFilter(filter, activeFilters);
+        updateDropdownItems(
+          items,
+          activeFilters,
+          dropdown,
+          input,
+          dropdownItemContainer
+        );
+
+        const d1 = globalResearch(input, recipes);
+        const d2 = filtersResearch(activeFilters, d1);
+        reconstructDOM(d2);
+      });
     });
-  });
 
   dropdownItemContainer.innerHTML = filteredItems
     .map((item) => {
@@ -131,7 +136,7 @@ export function updateDropdownItems(
     .join("");
 }
 
-export function createDropdown(props, items, activeFilters, filterRecipes, displayRecipes) {
+export function createDropdown(props, items, activeFilters) {
   const dropdownHTML = generateDropdownHTML(props, items, activeFilters);
   const dropdown = document.createElement("div");
   dropdown.classList.add("dropdown");
@@ -147,30 +152,39 @@ export function createDropdown(props, items, activeFilters, filterRecipes, displ
   const dropdownItemContainer = dropdown.querySelector(".dropdown-items");
   const input = dropdown.querySelector(".form-control");
 
-  input.addEventListener("input", () =>
+  input.addEventListener("input", () => {
     updateDropdownItems(
       items,
       activeFilters,
       dropdown,
       input,
-      dropdownItemContainer,
-      filterRecipes,
-      displayRecipes
-    )
-  );
+      dropdownItemContainer
+    );
+
+    const d1 = globalResearch(input, recipes);
+    const d2 = filtersResearch(activeFilters, d1);
+    reconstructDOM(d2);
+  });
 
   dropdownItemContainer.addEventListener("click", (event) => {
-    handleDropdownItemClick(event, items, activeFilters, () =>
-      updateDropdownItems(
-        items,
-        activeFilters,
-        dropdown,
-        input,
-        dropdownItemContainer,
-        filterRecipes,
-        displayRecipes
-      )
+    handleDropdownItemClick(
+      event,
+      items,
+      activeFilters,
+      updateDropdownItems,
+      dropdown,
+      input,
+      dropdownItemContainer
     );
+  });
+
+  dropdownItemContainer.querySelectorAll(".dropdown-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      const d1 = globalResearch(searchInput, recipes);
+      const d2 = filtersResearch(activeFilters, d1);
+
+      reconstructDOM(d2);
+    });
   });
 
   return dropdown;
@@ -207,17 +221,11 @@ const appliances = recipes.reduce((acc, recipe) => {
 }, []);
 
 dropdownContainer.appendChild(
-  createDropdown(
-    { title: "Ingrédients" },
-    ingredients,
-    activeFilters,
-    filterRecipes,
-    displayRecipes
-  )
+  createDropdown({ title: "Ingrédients" }, ingredients, activeFilters)
 );
 dropdownContainer.appendChild(
-  createDropdown({ title: "Ustensiles" }, utensils, activeFilters, filterRecipes, displayRecipes)
+  createDropdown({ title: "Ustensiles" }, utensils, activeFilters)
 );
 dropdownContainer.appendChild(
-  createDropdown({ title: "Appareils" }, appliances, activeFilters, filterRecipes, displayRecipes)
+  createDropdown({ title: "Appareils" }, appliances, activeFilters)
 );
