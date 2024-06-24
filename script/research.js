@@ -1,14 +1,7 @@
-import { activeFilters } from "./researchBar.js";
-import { recipes } from "./recipes.js";
+import { createCard } from "./card.js";
+export let activeFilters = [];
 
-const searchInput = document.querySelector(".form-control");
-const filters = activeFilters;
-const data = recipes;
-export const activeFilters = [];
-
-export function globalResearch(searchInput, data) {
-  const keyword = searchInput.value.toLowerCase();
-
+export function globalResearch(keyword, data) {
   return data.filter((recipe) => {
     const isInName = recipe.name.toLowerCase().includes(keyword);
     const isInDescription = recipe.description.toLowerCase().includes(keyword);
@@ -33,18 +26,14 @@ export function filtersResearch(filters, d1) {
       });
       const isInAppliances = recipe.appliance.toLowerCase().includes(filter);
 
-      return (
-        isInName ||
-        isInIngredient ||
-        isInDescription ||
-        isInUstensils ||
-        isInAppliances
-      );
+      return isInName || isInIngredient || isInDescription || isInUstensils || isInAppliances;
     });
   });
 }
 
 export function reconstructDOM(d2) {
+  const gallery = document.querySelector(".gallery");
+  const numberRecipe = document.querySelector(".number-recipe");
   gallery.innerHTML = "";
 
   d2.forEach((recipe) => {
@@ -54,7 +43,3 @@ export function reconstructDOM(d2) {
 
   numberRecipe.textContent = `${d2.length} recettes`;
 }
-
-const d1 = globalResearch(searchInput, data);
-const d2 = filtersResearch(filters, d1);
-reconstructDOM(d2);

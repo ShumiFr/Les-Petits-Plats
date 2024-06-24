@@ -1,16 +1,15 @@
 import { globalResearch, filtersResearch, reconstructDOM } from "./research.js";
 import { recipes } from "./recipes.js";
-import { getActiveFilters } from "./researchBar.js";
+import { globalResearchResults } from "./researchBar.js";
 
 export function strUcFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export function removeActiveFilter(keyword) {
-  const activeFilters = getActiveFilters();
-  const index = activeFilters.indexOf(keyword);
+  const index = globalResearchResults.advancedFiltersResults.indexOf(keyword);
   if (index > -1) {
-    activeFilters.splice(index, 1);
+    globalResearchResults.advancedFiltersResults.splice(index, 1);
   }
 
   const filterTag = document.getElementById(`filter-tag-${keyword}`);
@@ -25,7 +24,7 @@ export function removeActiveFilter(keyword) {
   }
 
   const d1 = globalResearch(document.querySelector(".form-control"), recipes);
-  const d2 = filtersResearch(activeFilters, d1);
+  const d2 = filtersResearch(globalResearchResults.advancedFiltersResults, d1);
   reconstructDOM(d2);
 }
 
@@ -43,12 +42,13 @@ export function createActiveFilter(keyword) {
           </button>
         `;
 
-  filterDiv
-    .querySelector(".filter-delete")
-    .addEventListener("click", function () {
-      filterDiv.remove();
+  filterDiv.querySelector(".filter-delete").addEventListener("click", function (event) {
+    const targetElement = event.currentTarget.closest(".filter-active");
+    if (targetElement) {
+      targetElement.remove();
       removeActiveFilter(keyword);
-    });
+    }
+  });
 
   return filterDiv;
 }
