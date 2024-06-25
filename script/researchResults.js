@@ -1,5 +1,12 @@
+import { recipes } from "./recipes.js";
 import { createCard } from "./card.js";
-export let activeFilters = [];
+
+const searchInput = document.querySelector(".form-control");
+
+export const globalResearchResults = {
+  searchBarResults: "",
+  advancedFilterResults: [],
+};
 
 export function globalResearch(keyword, data) {
   return data.filter((recipe) => {
@@ -43,3 +50,35 @@ export function reconstructDOM(d2) {
 
   numberRecipe.textContent = `${d2.length} recettes`;
 }
+
+export function globalSearch() {
+  globalResearchResults.searchBarResults = searchInput.value.toLowerCase();
+
+  const d1 = globalResearch(globalResearchResults.searchBarResults, recipes);
+  const d2 = filtersResearch(globalResearchResults.advancedFilterResults, d1);
+
+  console.log("GlovalResearchResults", globalResearchResults);
+
+  reconstructDOM(d2);
+}
+
+searchInput.addEventListener("input", () => {
+  const keybord = searchInput.value.toLowerCase();
+
+  if (keybord.length >= 3) {
+    globalSearch();
+  } else {
+    const d2 = filtersResearch(globalResearchResults.advancedFilterResults, recipes);
+    reconstructDOM(d2);
+  }
+});
+
+document.querySelectorAll(".dropdown-item").forEach((filter) => {
+  filter.addEventListener("click", (event) => {
+    const filterValue = event.target.textContent.toLowerCase();
+    if (!globalResearchResults.advancedFilterResults.includes(filterValue)) {
+      globalResearchResults.advancedFilterResults.push(filterValue);
+      globalSearch();
+    }
+  });
+});

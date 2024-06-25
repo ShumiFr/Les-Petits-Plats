@@ -1,39 +1,29 @@
-import { globalResearch, filtersResearch, reconstructDOM } from "./research.js";
-import { recipes } from "./recipes.js";
-import { globalResearchResults } from "./researchBar.js";
+import { globalResearchResults, globalSearch } from "./researchResults.js";
 
 export function strUcFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function removeActiveFilter(keyword) {
-  const index = globalResearchResults.advancedFiltersResults.indexOf(keyword);
-  if (index > -1) {
-    globalResearchResults.advancedFiltersResults.splice(index, 1);
+export function addActiveFilter(keyword) {
+  if (!globalResearchResults.advancedFilterResults.includes(keyword)) {
+    globalResearchResults.advancedFilterResults.push(keyword);
+    globalSearch();
   }
-
-  const filterTag = document.getElementById(`filter-tag-${keyword}`);
-  if (filterTag) {
-    filterTag.remove();
-  }
-
-  const dropdownFilter = document.querySelector(`[data-filter="${keyword}"]`);
-
-  if (dropdownFilter) {
-    dropdownFilter.remove();
-  }
-
-  const d1 = globalResearch(document.querySelector(".form-control"), recipes);
-  const d2 = filtersResearch(globalResearchResults.advancedFiltersResults, d1);
-  reconstructDOM(d2);
 }
 
-export function createActiveFilter(keyword) {
-  let keywordUcFirst = strUcFirst(keyword);
+export function removeActiveFilter(keyword) {
+  const index = globalResearchResults.advancedFilterResults.indexOf(keyword);
+  if (index > -1) {
+    globalResearchResults.advancedFilterResults.splice(index, 1);
+    globalSearch();
+  }
+}
+
+export function createActiveFilterElement(keyword) {
+  let keywordUcFirst = keyword.charAt(0).toUpperCase() + keyword.slice(1);
 
   const filterDiv = document.createElement("div");
   filterDiv.classList.add("filter-active");
-
   filterDiv.id = `filter-tag-${keyword}`;
   filterDiv.innerHTML = `
           <p>${keywordUcFirst}</p>
@@ -42,12 +32,9 @@ export function createActiveFilter(keyword) {
           </button>
         `;
 
-  filterDiv.querySelector(".filter-delete").addEventListener("click", function (event) {
-    const targetElement = event.currentTarget.closest(".filter-active");
-    if (targetElement) {
-      targetElement.remove();
-      removeActiveFilter(keyword);
-    }
+  filterDiv.querySelector(".filter-delete").addEventListener("click", function () {
+    filterDiv.remove();
+    removeActiveFilter(keyword);
   });
 
   return filterDiv;
