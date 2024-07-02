@@ -16,7 +16,7 @@ function generateDropdownHTML(props, items) {
   // Template HTML pour le menu déroulant
   const dropdownHTML = `
     <button class="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <p>${props.title}</p>
+        <p>${props}</p>
         <i class="fa-solid fa-chevron-down"></i>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -66,6 +66,15 @@ function handleDropdownItemClick(event, items) {
 // Fonction pour mettre à jour les éléments du menu déroulant en fonction de la saisie
 export function updateDropdownItems(items, dropdown, input, dropdownItemContainer) {
   // On vérifie que l'élément n'est pas ni dans les filtres actifs ni dans la barre de recherche
+
+  if (
+    typeof globalResearchResults === "undefined" ||
+    !globalResearchResults.advancedFilterResults
+  ) {
+    console.error("globalResearchResults n'est pas encore initialisé.");
+    return; // Sortie anticipée de la fonction si globalResearchResults n'est pas défini
+  }
+
   const filteredItems = items.filter(
     (item) =>
       item.toLowerCase().includes(input.value.toLowerCase()) &&
@@ -110,6 +119,7 @@ export function createDropdown(props, items) {
   const dropdownHTML = generateDropdownHTML(props, items); // Génère le HTML du menu déroulant
   const dropdown = document.createElement("div"); // Crée un conteneur pour le menu déroulant
   dropdown.classList.add("dropdown"); // Ajoute la classe 'dropdown'
+  dropdown.setAttribute("data-title", props); // Ajoute l'attribut 'data-title' avec le titre du menu
   dropdown.innerHTML = dropdownHTML; // Insère le HTML généré
 
   // Ajoute des gestionnaires d'événements pour le bouton et les éléments du menu
@@ -133,6 +143,26 @@ export function createDropdown(props, items) {
   });
 
   return dropdown; // Retourne le menu déroulant créé
+}
+
+export function updateOrCreateDropdown(title, items) {
+  let dropdown = document.querySelector(`.dropdown[data-title="${title}"]`);
+  if (dropdown) {
+    // Vider le contenu existant et ajouter les nouveaux éléments
+    const dropdownMenu = dropdown.querySelector(".dropdown-items");
+    dropdownMenu.innerHTML = ""; // Vider le contenu existant
+    items.forEach((item) => {
+      const itemElement = document.createElement("a");
+      itemElement.classList.add("dropdown-item");
+      itemElement.textContent = item;
+      dropdownMenu.appendChild(itemElement);
+    });
+  }
+
+  // Après la création ou la mise à jour, mettre à jour les éléments du menu déroulant pour afficher les filtres actifs
+  const input = dropdown.querySelector(".form-control");
+  const dropdownItemContainer = dropdown.querySelector(".dropdown-items");
+  updateDropdownItems(items, dropdown, input, dropdownItemContainer);
 }
 
 /* ----------------- Création des filtres de recherche avancée ----------------- */
@@ -167,6 +197,6 @@ const appliances = recipes.reduce((acc, recipe) => {
 }, []);
 
 // Ajoute les menus déroulants pour les ingrédients, ustensiles et appareils au conteneur
-dropdownContainer.appendChild(createDropdown({ title: "Ingrédients" }, ingredients));
-dropdownContainer.appendChild(createDropdown({ title: "Ustensiles" }, utensils));
-dropdownContainer.appendChild(createDropdown({ title: "Appareils" }, appliances));
+dropdownContainer.appendChild(createDropdown("Ingrédients", ingredients));
+dropdownContainer.appendChild(createDropdown("Ustensiles", utensils));
+dropdownContainer.appendChild(createDropdown("Appareils", appliances));

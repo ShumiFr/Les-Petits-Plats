@@ -1,7 +1,10 @@
 import { recipes } from "./recipes.js";
 import { createCard } from "./card.js";
+import { updateOrCreateDropdown } from "./dropdown.js";
+import { strUcFirst } from "./filterActive.js";
 
 const searchInput = document.querySelector(".form-control");
+const dropdownContainer = document.querySelector(".filter-dropdowns");
 
 export const globalResearchResults = {
   searchBarResults: "",
@@ -58,6 +61,38 @@ export function globalSearch() {
   const d2 = filtersResearch(globalResearchResults.advancedFilterResults, d1);
 
   console.log("GlovalResearchResults", globalResearchResults);
+
+  const ingredients = d2.reduce((acc, recipe) => {
+    recipe.ingredients.forEach((ingredient) => {
+      const capitalizedIngredient = strUcFirst(ingredient.ingredient); // Capitalise l'ingrédient
+      if (!acc.includes(capitalizedIngredient)) {
+        acc.push(capitalizedIngredient); // Ajoute l'ingrédient s'il n'est pas déjà présent
+      }
+    });
+    return acc;
+  }, []);
+
+  const utensils = d2.reduce((acc, recipe) => {
+    recipe.ustensils.forEach((utensil) => {
+      const capitalizedUtensil = strUcFirst(utensil); // Capitalise l'ustensile
+      if (!acc.includes(capitalizedUtensil)) {
+        acc.push(capitalizedUtensil); // Ajoute l'ustensile s'il n'est pas déjà présent
+      }
+    });
+    return acc;
+  }, []);
+
+  const appliances = d2.reduce((acc, recipe) => {
+    const capitalizedAppliance = strUcFirst(recipe.appliance); // Capitalise l'appareil
+    if (!acc.includes(capitalizedAppliance)) {
+      acc.push(capitalizedAppliance); // Ajoute l'appareil s'il n'est pas déjà présent
+    }
+    return acc;
+  }, []);
+
+  updateOrCreateDropdown("Ingrédients", ingredients);
+  updateOrCreateDropdown("Ustensiles", utensils);
+  updateOrCreateDropdown("Appareils", appliances);
 
   reconstructDOM(d2);
 }
