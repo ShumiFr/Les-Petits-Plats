@@ -6,6 +6,8 @@ import { globalResearchResults, globalSearch, filtersResearch } from "./research
 // Sélection du conteneur pour les menus déroulants
 const dropdownContainer = document.querySelector(".filter-dropdowns");
 
+/* ----------------- Création des donctions ----------------- */
+
 // Fonction pour générer le HTML d'un menu déroulant
 function generateDropdownHTML(props, items) {
   // Création des éléments de liste pour chaque item
@@ -19,7 +21,7 @@ function generateDropdownHTML(props, items) {
         <p>${props}</p>
         <i class="fa-solid fa-chevron-down"></i>
     </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         <div class="input-group bg-white">
             <input
             type="text"
@@ -36,7 +38,7 @@ function generateDropdownHTML(props, items) {
         <div class="dropdown-items">
         ${dropdownItems}
         </div>
-    </ul>
+    </div>
     `;
 
   return dropdownHTML; // Retourne le HTML généré
@@ -47,18 +49,9 @@ function handleDropdownItemClick(event, items) {
   if (event.target.matches(".dropdown-item")) {
     event.preventDefault(); // Empêche l'action par défaut
     const selectedItem = event.target.textContent.toLowerCase(); // Récupère l'élément sélectionné
-    // Vérifie si l'élément n'est pas déjà dans les résultats de recherche avancée
     if (!globalResearchResults.advancedFilterResults.includes(selectedItem)) {
       globalResearchResults.advancedFilterResults.push(selectedItem); // Ajoute l'élément au tableau des filtres avancés
       globalSearch(); // Lance la recherche globale
-
-      // Récupère les éléments nécessaires pour mettre à jour l'affichage
-      const dropdown = event.target.closest(".dropdown");
-      const input = dropdown.querySelector(".form-control");
-      const dropdownItemContainer = dropdown.querySelector(".dropdown-items");
-
-      // Met à jour les éléments du menu déroulant pour refléter les filtres actifs
-      updateDropdownItems(items, dropdown, input, dropdownItemContainer);
     }
   }
 }
@@ -83,7 +76,11 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
 
   // Si c'est le cas on affiche les éléments filtrés sinon on le retire de la liste ( Pour evité les doublons )
   dropdownItemContainer.innerHTML = filteredItems
-    .map((item) => `<li class="dropdown-item">${item}</li>`)
+    .map(
+      (item) => `<li >
+                    <a class="dropdown-item href="#"">${item}</a>
+                </li>`
+    )
     .join("");
 
   // Sélectionne et met à jour le conteneur des éléments actifs
@@ -107,8 +104,8 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
       const filterIndex = globalResearchResults.advancedFilterResults.indexOf(filterToRemove); // Trouve l'index du filtre
       if (filterIndex > -1) {
         globalResearchResults.advancedFilterResults.splice(filterIndex, 1); // Supprime le filtre
-        globalSearch(); // Lance la recherche globale
         updateDropdownItems(items, dropdown, input, dropdownItemContainer); // Met à jour les éléments du menu déroulant
+        globalSearch(); // Lance la recherche globale
       }
     });
   });
@@ -145,7 +142,8 @@ export function createDropdown(props, items) {
   return dropdown; // Retourne le menu déroulant créé
 }
 
-export function updateOrCreateDropdown(title, items) {
+// Fonction pour mettre a jour le dropdown
+export function updateDropdown(title, items) {
   let dropdown = document.querySelector(`.dropdown[data-title="${title}"]`);
   if (dropdown) {
     // Vider le contenu existant et ajouter les nouveaux éléments

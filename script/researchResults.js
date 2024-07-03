@@ -1,10 +1,9 @@
 import { recipes } from "./recipes.js";
 import { createCard } from "./card.js";
-import { updateOrCreateDropdown } from "./dropdown.js";
+import { updateDropdown } from "./dropdown.js";
 import { strUcFirst } from "./filterActive.js";
 
 const searchInput = document.querySelector(".form-control");
-const dropdownContainer = document.querySelector(".filter-dropdowns");
 
 export const globalResearchResults = {
   searchBarResults: "",
@@ -60,8 +59,6 @@ export function globalSearch() {
   const d1 = globalResearch(globalResearchResults.searchBarResults, recipes);
   const d2 = filtersResearch(globalResearchResults.advancedFilterResults, d1);
 
-  console.log("GlovalResearchResults", globalResearchResults);
-
   const ingredients = d2.reduce((acc, recipe) => {
     recipe.ingredients.forEach((ingredient) => {
       const capitalizedIngredient = strUcFirst(ingredient.ingredient); // Capitalise l'ingrédient
@@ -90,9 +87,9 @@ export function globalSearch() {
     return acc;
   }, []);
 
-  updateOrCreateDropdown("Ingrédients", ingredients);
-  updateOrCreateDropdown("Ustensiles", utensils);
-  updateOrCreateDropdown("Appareils", appliances);
+  updateDropdown("Ingrédients", ingredients);
+  updateDropdown("Ustensiles", utensils);
+  updateDropdown("Appareils", appliances);
 
   reconstructDOM(d2);
 }
@@ -102,10 +99,10 @@ searchInput.addEventListener("input", () => {
 
   if (keybord.length >= 3) {
     globalSearch();
-  } else {
-    const d2 = filtersResearch(globalResearchResults.advancedFilterResults, recipes);
-    reconstructDOM(d2);
   }
+  const d2 = filtersResearch(globalResearchResults.advancedFilterResults, recipes);
+  console.log(globalResearchResults.advancedFilterResults);
+  reconstructDOM(d2);
 });
 
 document.querySelectorAll(".dropdown-item").forEach((filter) => {
