@@ -44,26 +44,6 @@ function generateDropdownHTML(props, items) {
   return dropdownHTML; // Retourne le HTML généré
 }
 
-// Gestionnaire d'événements qui ajoute l'élément sélectionné dans le tableau des filtres actifs
-function handleDropdownItemClick(event, type) {
-  if (event.target.matches(".dropdown-item")) {
-    event.preventDefault(); // Empêche l'action par défaut
-    const selectedItem = event.target.textContent.toLowerCase(); // Récupère l'élément sélectionné
-    const filterObject = { item: selectedItem, type: type }; // Crée un objet avec l'élément et son type
-
-    // Vérifie si l'objet n'est pas déjà présent dans le tableau des filtres avancés
-    const isAlreadyIncluded = globalResearchResults.advancedFilterResults.some(
-      (filter) => filter.item === selectedItem && filter.type === type
-    );
-
-    if (!isAlreadyIncluded) {
-      globalResearchResults.advancedFilterResults.push(filterObject);
-      console.log("Filtres actifs :", globalResearchResults); // Ajoute l'objet au tableau des filtres avancés
-      globalSearch(); // Lance la recherche globale
-    }
-  }
-}
-
 // Fonction pour gérer la saisie dans la barre de recherche
 function handleSearchBarInput(items, input, dropdownItemContainer, type) {
   const filteredItems = items.filter(
@@ -75,7 +55,7 @@ function handleSearchBarInput(items, input, dropdownItemContainer, type) {
   );
 
   dropdownItemContainer.innerHTML = filteredItems
-    .map((item) => `<li><a class="dropdown-item href="#"">${item}</a></li>`)
+    .map((item) => `<li><a class="dropdown-item" href="#">${item}</a></li>`)
     .join("");
 }
 
@@ -83,7 +63,6 @@ function handleSearchBarInput(items, input, dropdownItemContainer, type) {
 export function updateDropdownItems(items, dropdown, input, dropdownItemContainer, type) {
   const activeItemsContainer = dropdown.querySelector(".dropdown-active-items");
 
-  // Génère la chaîne HTML pour les éléments actifs du filtre
   const activeItemsHTML = globalResearchResults.advancedFilterResults
     .filter((filter) => filter.type === type)
     .map(
@@ -94,10 +73,8 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
     )
     .join("");
 
-  // Met à jour le contenu de activeItemsContainer avec la chaîne HTML générée
   activeItemsContainer.innerHTML = activeItemsHTML;
 
-  // Attache les gestionnaires d'événements aux boutons de suppression
   activeItemsContainer.querySelectorAll(".filter-delete").forEach((button) => {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -107,11 +84,34 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
       );
       if (filterIndex > -1) {
         globalResearchResults.advancedFilterResults.splice(filterIndex, 1);
-        updateDropdownItems(items, dropdown, input, dropdownItemContainer, type);
+        updateDropdownItems(items, dropdown, input, dropdownItemContainer, type); // Mise à jour après suppression d'un filtre
         globalSearch();
       }
     });
   });
+
+  // Mise à jour de la liste des éléments disponibles après modification des filtres actifs
+  handleSearchBarInput(items, input, dropdownItemContainer, type);
+}
+
+// Gestionnaire d'événements qui ajoute l'élément sélectionné dans le tableau des filtres actifs
+function handleDropdownItemClick(event, type, items, dropdown, input, dropdownItemContainer) {
+  if (event.target.matches(".dropdown-item")) {
+    event.preventDefault();
+    const selectedItem = event.target.textContent.toLowerCase();
+    const filterObject = { item: selectedItem, type: type };
+
+    const isAlreadyIncluded = globalResearchResults.advancedFilterResults.some(
+      (filter) => filter.item === selectedItem && filter.type === type
+    );
+
+    if (!isAlreadyIncluded) {
+      globalResearchResults.advancedFilterResults.push(filterObject);
+      console.log("Filtres actifs :", globalResearchResults);
+      globalSearch();
+      updateDropdownItems(items, dropdown, input, dropdownItemContainer, type); // Mise à jour après ajout d'un filtre
+    }
+  }
 }
 
 // Fonction pour créer un menu déroulant
@@ -149,7 +149,7 @@ export function createDropdown(props, items) {
   const input = dropdown.querySelector(".form-control");
 
   dropdownItemContainer.addEventListener("click", (event) => {
-    handleDropdownItemClick(event, type); // Gère les clics sur les éléments avec le type spécifié
+    handleDropdownItemClick(event, type, items, dropdown, input, dropdownItemContainer); // Gère les clics sur les éléments avec le type spécifié
   });
 
   input.addEventListener(
