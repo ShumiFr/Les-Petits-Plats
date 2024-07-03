@@ -1,7 +1,7 @@
 // Importation des modules nécessaires
 import { recipes } from "./recipes.js";
-import { strUcFirst } from "./filterActive.js";
-import { globalResearchResults, globalSearch, filtersResearch } from "./researchResults.js";
+import { strUcFirst } from "./utils.js";
+import { globalResearchResults, globalSearch } from "./researchResults.js";
 
 // Sélection du conteneur pour les menus déroulants
 const dropdownContainer = document.querySelector(".filter-dropdowns");
@@ -45,12 +45,20 @@ function generateDropdownHTML(props, items) {
 }
 
 // Gestionnaire d'événements qui ajoute l'élément sélectionné dans le tableau des filtres actifs
-function handleDropdownItemClick(event, items) {
+function handleDropdownItemClick(event, type) {
   if (event.target.matches(".dropdown-item")) {
     event.preventDefault(); // Empêche l'action par défaut
     const selectedItem = event.target.textContent.toLowerCase(); // Récupère l'élément sélectionné
-    if (!globalResearchResults.advancedFilterResults.includes(selectedItem)) {
-      globalResearchResults.advancedFilterResults.push(selectedItem); // Ajoute l'élément au tableau des filtres avancés
+    const filterObject = { item: selectedItem, type: type }; // Crée un objet avec l'élément et son type
+
+    // Vérifie si l'objet n'est pas déjà présent dans le tableau des filtres avancés
+    const isAlreadyIncluded = globalResearchResults.advancedFilterResults.some(
+      (filter) => filter.item === selectedItem && filter.type === type
+    );
+
+    if (!isAlreadyIncluded) {
+      globalResearchResults.advancedFilterResults.push(filterObject);
+      console.log("Filtres actifs :", globalResearchResults); // Ajoute l'objet au tableau des filtres avancés
       globalSearch(); // Lance la recherche globale
     }
   }
@@ -60,18 +68,12 @@ function handleDropdownItemClick(event, items) {
 export function updateDropdownItems(items, dropdown, input, dropdownItemContainer) {
   // On vérifie que l'élément n'est pas ni dans les filtres actifs ni dans la barre de recherche
 
-  if (
-    typeof globalResearchResults === "undefined" ||
-    !globalResearchResults.advancedFilterResults
-  ) {
-    console.error("globalResearchResults n'est pas encore initialisé.");
-    return; // Sortie anticipée de la fonction si globalResearchResults n'est pas défini
-  }
-
   const filteredItems = items.filter(
     (item) =>
       item.toLowerCase().includes(input.value.toLowerCase()) &&
-      !globalResearchResults.advancedFilterResults.includes(item.toLowerCase())
+      !globalResearchResults.advancedFilterResults.some(
+        (filter) => filter.item === item.toLowerCase()
+      )
   );
 
   // Si c'est le cas on affiche les éléments filtrés sinon on le retire de la liste ( Pour evité les doublons )
@@ -88,11 +90,11 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
   activeItemsContainer.innerHTML = globalResearchResults.advancedFilterResults
     .map(
       (filter) =>
-        ` <li data-filter="${filter.toLowerCase()}">
-          <p>${strUcFirst(filter)}</p>
-          <button class="filter-delete"><i class="fa-solid fa-xmark"></i></button>
-        </li>
-      `
+        ` <li data-filter="${filter.item}">
+        <p>${strUcFirst(filter.item)}</p>
+        <button class="filter-delete"><i class="fa-solid fa-xmark"></i></button>
+      </li>
+    `
     )
     .join("");
 
@@ -101,7 +103,10 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
     button.addEventListener("click", (event) => {
       event.stopPropagation(); // Empêche l'événement de se propager
       const filterToRemove = event.target.closest("li").getAttribute("data-filter"); // Récupère le filtre à supprimer
-      const filterIndex = globalResearchResults.advancedFilterResults.indexOf(filterToRemove); // Trouve l'index du filtre
+      // Trouve l'index du filtre à supprimer
+      const filterIndex = globalResearchResults.advancedFilterResults.findIndex(
+        (filter) => filter.item === filterToRemove
+      );
       if (filterIndex > -1) {
         globalResearchResults.advancedFilterResults.splice(filterIndex, 1); // Supprime le filtre
         updateDropdownItems(items, dropdown, input, dropdownItemContainer); // Met à jour les éléments du menu déroulant
@@ -136,7 +141,21 @@ export function createDropdown(props, items) {
   );
 
   dropdownItemContainer.addEventListener("click", (event) => {
-    handleDropdownItemClick(event, items); // Gère les clics sur les éléments
+    let type;
+    switch (props.toLowerCase()) {
+      case "ingrédients":
+        type = "ingredient";
+        break;
+      case "ustensiles":
+        type = "utensil";
+        break;
+      case "appareils":
+        type = "appliance";
+        break;
+      default:
+        type = "unknown";
+    }
+    handleDropdownItemClick(event, type); // Gère les clics sur les éléments avec le type spécifié
   });
 
   return dropdown; // Retourne le menu déroulant créé
