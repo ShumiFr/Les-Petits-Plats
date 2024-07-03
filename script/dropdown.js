@@ -64,53 +64,51 @@ function handleDropdownItemClick(event, type) {
   }
 }
 
-// Fonction pour mettre à jour les éléments du menu déroulant en fonction de la saisie
-export function updateDropdownItems(items, dropdown, input, dropdownItemContainer) {
-  // On vérifie que l'élément n'est pas ni dans les filtres actifs ni dans la barre de recherche
-
+// Fonction pour gérer la saisie dans la barre de recherche
+function handleSearchBarInput(items, input, dropdownItemContainer, type) {
   const filteredItems = items.filter(
     (item) =>
       item.toLowerCase().includes(input.value.toLowerCase()) &&
       !globalResearchResults.advancedFilterResults.some(
-        (filter) => filter.item === item.toLowerCase()
+        (filter) => filter.item === item.toLowerCase() && filter.type === type
       )
   );
 
-  // Si c'est le cas on affiche les éléments filtrés sinon on le retire de la liste ( Pour evité les doublons )
   dropdownItemContainer.innerHTML = filteredItems
-    .map(
-      (item) => `<li >
-                    <a class="dropdown-item href="#"">${item}</a>
-                </li>`
-    )
+    .map((item) => `<li><a class="dropdown-item href="#"">${item}</a></li>`)
     .join("");
+}
 
-  // Sélectionne et met à jour le conteneur des éléments actifs
+// Fonction pour mettre à jour les éléments du menu déroulant
+export function updateDropdownItems(items, dropdown, input, dropdownItemContainer, type) {
   const activeItemsContainer = dropdown.querySelector(".dropdown-active-items");
-  activeItemsContainer.innerHTML = globalResearchResults.advancedFilterResults
+
+  // Génère la chaîne HTML pour les éléments actifs du filtre
+  const activeItemsHTML = globalResearchResults.advancedFilterResults
+    .filter((filter) => filter.type === type)
     .map(
       (filter) =>
-        ` <li data-filter="${filter.item}">
-        <p>${strUcFirst(filter.item)}</p>
-        <button class="filter-delete"><i class="fa-solid fa-xmark"></i></button>
-      </li>
-    `
+        `<li data-filter="${filter.item}"><p>${strUcFirst(
+          filter.item
+        )}</p><button class="filter-delete"><i class="fa-solid fa-xmark"></i></button></li>`
     )
     .join("");
 
-  // Ajoute des gestionnaires d'événements pour supprimer des filtres
+  // Met à jour le contenu de activeItemsContainer avec la chaîne HTML générée
+  activeItemsContainer.innerHTML = activeItemsHTML;
+
+  // Attache les gestionnaires d'événements aux boutons de suppression
   activeItemsContainer.querySelectorAll(".filter-delete").forEach((button) => {
     button.addEventListener("click", (event) => {
-      event.stopPropagation(); // Empêche l'événement de se propager
-      const filterToRemove = event.target.closest("li").getAttribute("data-filter"); // Récupère le filtre à supprimer
-      // Trouve l'index du filtre à supprimer
+      event.stopPropagation();
+      const filterToRemove = event.target.closest("li").getAttribute("data-filter");
       const filterIndex = globalResearchResults.advancedFilterResults.findIndex(
-        (filter) => filter.item === filterToRemove
+        (filter) => filter.item === filterToRemove && filter.type === type
       );
       if (filterIndex > -1) {
-        globalResearchResults.advancedFilterResults.splice(filterIndex, 1); // Supprime le filtre
-        updateDropdownItems(items, dropdown, input, dropdownItemContainer); // Met à jour les éléments du menu déroulant
-        globalSearch(); // Lance la recherche globale
+        globalResearchResults.advancedFilterResults.splice(filterIndex, 1);
+        updateDropdownItems(items, dropdown, input, dropdownItemContainer, type);
+        globalSearch();
       }
     });
   });
@@ -124,6 +122,21 @@ export function createDropdown(props, items) {
   dropdown.setAttribute("data-title", props); // Ajoute l'attribut 'data-title' avec le titre du menu
   dropdown.innerHTML = dropdownHTML; // Insère le HTML généré
 
+  let type;
+  switch (props.toLowerCase()) {
+    case "ingrédients":
+      type = "ingredient";
+      break;
+    case "ustensiles":
+      type = "utensil";
+      break;
+    case "appareils":
+      type = "appliance";
+      break;
+    default:
+      type = "unknown";
+  }
+
   // Ajoute des gestionnaires d'événements pour le bouton et les éléments du menu
   const button = dropdown.querySelector(".dropdown-toggle");
   const menu = dropdown.querySelector(".dropdown-menu");
@@ -135,14 +148,24 @@ export function createDropdown(props, items) {
   const dropdownItemContainer = dropdown.querySelector(".dropdown-items");
   const input = dropdown.querySelector(".form-control");
 
+  dropdownItemContainer.addEventListener("click", (event) => {
+    handleDropdownItemClick(event, type); // Gère les clics sur les éléments avec le type spécifié
+  });
+
   input.addEventListener(
     "input",
-    () => updateDropdownItems(items, dropdown, input, dropdownItemContainer) // Met à jour les éléments en fonction de la saisie
+    () => handleSearchBarInput(items, input, dropdownItemContainer, type) // Corrige l'ordre des paramètres ici
   );
 
-  dropdownItemContainer.addEventListener("click", (event) => {
+  return dropdown; // Retourne le menu déroulant créé
+}
+
+// Fonction pour mettre a jour le dropdown
+export function updateDropdown(title, items) {
+  let dropdown = document.querySelector(`.dropdown[data-title="${title}"]`);
+  if (dropdown) {
     let type;
-    switch (props.toLowerCase()) {
+    switch (title.toLowerCase()) {
       case "ingrédients":
         type = "ingredient";
         break;
@@ -155,17 +178,7 @@ export function createDropdown(props, items) {
       default:
         type = "unknown";
     }
-    handleDropdownItemClick(event, type); // Gère les clics sur les éléments avec le type spécifié
-  });
 
-  return dropdown; // Retourne le menu déroulant créé
-}
-
-// Fonction pour mettre a jour le dropdown
-export function updateDropdown(title, items) {
-  let dropdown = document.querySelector(`.dropdown[data-title="${title}"]`);
-  if (dropdown) {
-    // Vider le contenu existant et ajouter les nouveaux éléments
     const dropdownMenu = dropdown.querySelector(".dropdown-items");
     dropdownMenu.innerHTML = ""; // Vider le contenu existant
     items.forEach((item) => {
@@ -174,12 +187,11 @@ export function updateDropdown(title, items) {
       itemElement.textContent = item;
       dropdownMenu.appendChild(itemElement);
     });
-  }
 
-  // Après la création ou la mise à jour, mettre à jour les éléments du menu déroulant pour afficher les filtres actifs
-  const input = dropdown.querySelector(".form-control");
-  const dropdownItemContainer = dropdown.querySelector(".dropdown-items");
-  updateDropdownItems(items, dropdown, input, dropdownItemContainer);
+    const input = dropdown.querySelector(".form-control");
+    const dropdownItemContainer = dropdown.querySelector(".dropdown-items");
+    updateDropdownItems(items, dropdown, input, dropdownItemContainer, type);
+  }
 }
 
 /* ----------------- Création des filtres de recherche avancée ----------------- */

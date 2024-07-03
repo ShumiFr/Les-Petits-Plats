@@ -33,7 +33,7 @@ export function filtersResearch(filters, d1) {
             ingredient.ingredient.toLowerCase().includes(filter)
           );
           break;
-        case "ustensil":
+        case "utensil":
           isInFilter = recipe.ustensils.some((ustensil) => ustensil.toLowerCase().includes(filter));
           break;
         case "appliance":
