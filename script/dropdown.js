@@ -74,6 +74,9 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
     .join("");
 
   activeItemsContainer.innerHTML = activeItemsHTML;
+  
+  // Mise à jour de la liste des éléments disponibles après modification des filtres actifs
+  handleSearchBarInput(items, input, dropdownItemContainer, type);
 
   activeItemsContainer.querySelectorAll(".filter-delete").forEach((button) => {
     button.addEventListener("click", (event) => {
@@ -90,12 +93,10 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
     });
   });
 
-  // Mise à jour de la liste des éléments disponibles après modification des filtres actifs
-  handleSearchBarInput(items, input, dropdownItemContainer, type);
 }
 
 // Gestionnaire d'événements qui ajoute l'élément sélectionné dans le tableau des filtres actifs
-function handleDropdownItemClick(event, type, items, dropdown, input, dropdownItemContainer) {
+function handleDropdownItemClick(event, type, items) {
   if (event.target.matches(".dropdown-item")) {
     event.preventDefault();
     const selectedItem = event.target.textContent.toLowerCase();
@@ -107,9 +108,7 @@ function handleDropdownItemClick(event, type, items, dropdown, input, dropdownIt
 
     if (!isAlreadyIncluded) {
       globalResearchResults.advancedFilterResults.push(filterObject);
-      console.log("Filtres actifs :", globalResearchResults);
       globalSearch();
-      updateDropdownItems(items, dropdown, input, dropdownItemContainer, type); // Mise à jour après ajout d'un filtre
     }
   }
 }
@@ -190,6 +189,7 @@ export function updateDropdown(title, items) {
 
     const input = dropdown.querySelector(".form-control");
     const dropdownItemContainer = dropdown.querySelector(".dropdown-items");
+
     updateDropdownItems(items, dropdown, input, dropdownItemContainer, type);
   }
 }
