@@ -412,3 +412,10 @@ ul {
   font-weight: 400;
   line-height: normal;
 }
+
+.no-recipes {
+  font-family: "Manrope", sans-serif;
+  font-size: 18px;
+  color: red;
+  margin-bottom: 50px;
+}

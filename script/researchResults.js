@@ -52,12 +52,19 @@ export function reconstructDOM(d2) {
   const numberRecipe = document.querySelector(".number-recipe");
   gallery.innerHTML = "";
 
-  d2.forEach((recipe) => {
-    const cardHTML = createCard(recipe);
-    gallery.innerHTML += cardHTML;
-  });
+  if (d2.length === 0) {
+    const errorMessage = `<div class="no-recipes">Aucune recette ne contient '${searchInput.value}', vous pouvez chercher "tarte aux pommes", "poisson", etc.</div>`;
+    gallery.innerHTML = errorMessage;
+    numberRecipe.textContent = "0 recettes";
+  } else {
+    // Sinon, construisez le DOM avec les recettes trouvées
+    d2.forEach((recipe) => {
+      const cardHTML = createCard(recipe);
+      gallery.innerHTML += cardHTML;
+    });
 
-  numberRecipe.textContent = `${d2.length} recettes`;
+    numberRecipe.textContent = `${d2.length} recettes`;
+  }
 }
 
 searchInput.addEventListener("input", () => {
