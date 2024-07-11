@@ -83,12 +83,20 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
     button.addEventListener("click", (event) => {
       event.stopPropagation();
       const filterToRemove = event.target.closest("li").getAttribute("data-filter");
+      const filterId = `filter-tag-${filterToRemove.toLowerCase()}`;
+      const filterElementToRemove = document.getElementById(filterId);
+
+      if (filterElementToRemove) {
+        filterElementToRemove.remove();
+      }
+
       const filterIndex = globalResearchResults.advancedFilterResults.findIndex(
         (filter) => filter.item === filterToRemove && filter.type === type
       );
       if (filterIndex > -1) {
         globalResearchResults.advancedFilterResults.splice(filterIndex, 1);
-        updateDropdownItems(items, dropdown, input, dropdownItemContainer, type); // Mise à jour après suppression d'un filtre
+
+        updateDropdownItems(items, dropdown, input, dropdownItemContainer, type);
         globalSearch();
       }
     });
@@ -111,7 +119,6 @@ function handleDropdownItemClick(event, items, dropdown, input, dropdownItemCont
       globalSearch();
     }
 
-    console.log(selectedItem);
     createActiveFilter(selectedItem, items, dropdown, input, dropdownItemContainer, type);
   }
 }

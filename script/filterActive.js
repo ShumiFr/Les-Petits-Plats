@@ -6,7 +6,7 @@ export function createActiveFilter(keyword, items, dropdown, input, dropdownItem
   let keywordUcFirst = strUcFirst(keyword);
 
   const activeFiltersContainer = document.querySelector(".active-filters-container");
-  
+
   const filterDiv = document.createElement("div");
   filterDiv.classList.add("filter-active");
   filterDiv.id = `filter-tag-${keyword}`;
