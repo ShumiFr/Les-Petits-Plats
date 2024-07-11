@@ -1,3 +1,4 @@
+// Setup Block
 import { recipes } from "./recipes.js";
 import { createCard } from "./card.js";
 import { updateDropdown } from "./dropdown.js";
@@ -5,11 +6,13 @@ import { strUcFirst } from "./utils.js";
 
 const searchInput = document.querySelector(".form-control");
 
+// Setup Block
 export const globalResearchResults = {
   searchBarResults: "",
   advancedFilterResults: [],
 };
 
+// Code Block
 export function globalResearch(keyword, data) {
   return data.filter((recipe) => {
     const isInName = recipe.name.toLowerCase().includes(keyword);
@@ -22,6 +25,7 @@ export function globalResearch(keyword, data) {
   });
 }
 
+// Code Block
 export function filtersResearch(filters, d1) {
   return d1.filter((recipe) => {
     return filters.every((filterObj) => {
@@ -71,6 +75,7 @@ searchInput.addEventListener("input", () => {
   globalSearch();
 });
 
+// Code Block
 export function globalSearch() {
   globalResearchResults.searchBarResults = searchInput.value.toLowerCase();
 
@@ -111,6 +116,7 @@ export function globalSearch() {
     return acc;
   }, []);
 
+  // Sans ça
   updateDropdown("Ingrédients", ingredients);
   updateDropdown("Ustensiles", utensils);
   updateDropdown("Appareils", appliances);

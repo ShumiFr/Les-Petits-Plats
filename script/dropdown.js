@@ -2,6 +2,7 @@
 import { recipes } from "./recipes.js";
 import { strUcFirst } from "./utils.js";
 import { globalResearchResults, globalSearch } from "./researchResults.js";
+import { createActiveFilter } from "./filterActive.js";
 
 // Sélection du conteneur pour les menus déroulants
 const dropdownContainer = document.querySelector(".filter-dropdowns");
@@ -74,7 +75,7 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
     .join("");
 
   activeItemsContainer.innerHTML = activeItemsHTML;
-  
+
   // Mise à jour de la liste des éléments disponibles après modification des filtres actifs
   handleSearchBarInput(items, input, dropdownItemContainer, type);
 
@@ -92,11 +93,10 @@ export function updateDropdownItems(items, dropdown, input, dropdownItemContaine
       }
     });
   });
-
 }
 
 // Gestionnaire d'événements qui ajoute l'élément sélectionné dans le tableau des filtres actifs
-function handleDropdownItemClick(event, type, items) {
+function handleDropdownItemClick(event, items, dropdown, input, dropdownItemContainer, type) {
   if (event.target.matches(".dropdown-item")) {
     event.preventDefault();
     const selectedItem = event.target.textContent.toLowerCase();
@@ -110,6 +110,9 @@ function handleDropdownItemClick(event, type, items) {
       globalResearchResults.advancedFilterResults.push(filterObject);
       globalSearch();
     }
+
+    console.log(selectedItem);
+    createActiveFilter(selectedItem, items, dropdown, input, dropdownItemContainer, type);
   }
 }
 
@@ -148,7 +151,7 @@ export function createDropdown(props, items) {
   const input = dropdown.querySelector(".form-control");
 
   dropdownItemContainer.addEventListener("click", (event) => {
-    handleDropdownItemClick(event, type, items, dropdown, input, dropdownItemContainer); // Gère les clics sur les éléments avec le type spécifié
+    handleDropdownItemClick(event, items, dropdown, input, dropdownItemContainer, type); // Gère les clics sur les éléments avec le type spécifié
   });
 
   input.addEventListener(
