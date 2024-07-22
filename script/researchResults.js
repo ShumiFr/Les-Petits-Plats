@@ -1,4 +1,3 @@
-// Setup Block
 import { recipes } from "./recipes.js";
 import { createCard } from "./card.js";
 import { updateDropdown } from "./dropdown.js";
@@ -6,13 +5,11 @@ import { strUcFirst } from "./utils.js";
 
 const searchInput = document.querySelector(".form-control");
 
-// Setup Block
 export const globalResearchResults = {
   searchBarResults: "",
   advancedFilterResults: [],
 };
 
-// Code Block
 export function globalResearch(keyword, data) {
   return data.filter((recipe) => {
     const isInName = recipe.name.toLowerCase().includes(keyword);
@@ -25,7 +22,6 @@ export function globalResearch(keyword, data) {
   });
 }
 
-// Code Block
 export function filtersResearch(filters, d1) {
   return d1.filter((recipe) => {
     return filters.every((filterObj) => {
@@ -61,7 +57,6 @@ export function reconstructDOM(d2) {
     gallery.innerHTML = errorMessage;
     numberRecipe.textContent = "0 recettes";
   } else {
-    // Sinon, construisez le DOM avec les recettes trouvées
     d2.forEach((recipe) => {
       const cardHTML = createCard(recipe);
       gallery.innerHTML += cardHTML;
@@ -71,11 +66,6 @@ export function reconstructDOM(d2) {
   }
 }
 
-searchInput.addEventListener("input", () => {
-  globalSearch();
-});
-
-// Code Block
 export function globalSearch() {
   globalResearchResults.searchBarResults = searchInput.value.toLowerCase();
 
@@ -123,3 +113,7 @@ export function globalSearch() {
 
   reconstructDOM(d2);
 }
+
+searchInput.addEventListener("input", () => {
+  globalSearch();
+});
