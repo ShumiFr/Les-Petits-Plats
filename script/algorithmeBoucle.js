@@ -1,16 +1,23 @@
-// Setup Block
 import { recipes } from "./recipes.js";
 
+// Sélectionne l'élément DOM du champ de recherche
 const searchInput = document.querySelector(".form-control");
 
-// Setup Block
+// Objet global pour stocker les résultats de recherche
 export const globalResearchResults = {
   searchBarResults: "",
   advancedFilterResults: [],
 };
 
-// Code Block
-export function globalResearch(keyword, data) {
+/* ----------------- Création des fonctions ----------------- */
+
+/**
+ * Filtre les recettes en fonction d'un mot-clé.
+ * @param {string} keyword - Le mot-clé de recherche.
+ * @param {Array} data - La liste des recettes.
+ * @returns {Array} - Les recettes filtrées.
+ */
+export function filterRecipesByKeyword(keyword, data) {
   const results = [];
   for (let i = 0; i < data.length; i++) {
     const recipe = data[i];
@@ -31,16 +38,24 @@ export function globalResearch(keyword, data) {
   return results;
 }
 
-// Code Block
-export function globalSearch() {
+/**
+ * Filtre les recettes en fonction de critères spécifiques.
+ * @param {Array} filterCriteria - Les critères de filtrage.
+ * @param {Array} recipes - La liste des recettes.
+ * @returns {Array} - Les recettes filtrées.
+ */
+export function performGlobalSearch() {
   globalResearchResults.searchBarResults = searchInput.value.toLowerCase();
 
   let d1;
   if (globalResearchResults.searchBarResults.length >= 3) {
-    d1 = globalResearch(globalResearchResults.searchBarResults, recipes);
+    d1 = filterRecipesByKeyword(globalResearchResults.searchBarResults, recipes);
   } else {
     d1 = recipes;
   }
 }
 
-globalSearch();
+/* ----------------- Appels des fonctions ----------------- */
+
+// Appel de la fonction globalSearch
+performGlobalSearch();
