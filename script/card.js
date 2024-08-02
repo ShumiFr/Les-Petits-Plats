@@ -1,7 +1,15 @@
 import { recipes } from "./recipes.js";
 
+// Sélectionne l'élément DOM du nombre de recettes
 const numberRecipe = document.querySelector(".number-recipe");
 
+/* ----------------- Création des fonctions ----------------- */
+
+/**
+ * Crée une carte pour une recette.
+ * @param {Object} recipe - La recette.
+ * @returns {string} - La carte HTML.
+ */
 export function createCard(recipe) {
   let ingredientsHTML = "";
 
@@ -41,6 +49,9 @@ export function createCard(recipe) {
   `;
 }
 
+/* ----------------- Appels des fonctions ----------------- */
+
+// Créer une carte pour chaque recette
 recipes.forEach((recipe) => {
   const cardHTML = createCard(recipe);
   document.querySelector(".gallery").innerHTML += cardHTML;
