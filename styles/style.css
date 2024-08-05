@@ -1,0 +1,421 @@
+/* -------------------- HTML --------------------- */
+
+html {
+  scroll-behavior: smooth;
+  font-size: 100%;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  background: #ededed;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* -------------------- Header --------------------- */
+
+.header-logo {
+  width: 15%;
+  margin-top: 65px;
+  margin-left: 80px;
+}
+
+.header-logo img {
+  width: 100%;
+}
+
+/* -------------------- First Section --------------------- */
+
+.first-section {
+  width: 100%;
+}
+
+.first-section-background {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: -1;
+}
+
+.first-section-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 230px;
+}
+
+.first-section-content h1 {
+  font-family: "Anton", sans-serif;
+  font-size: 58px;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-align: center;
+  color: #ffd15b;
+  width: 48%;
+  line-height: 85px;
+}
+
+.input-group {
+  width: 65%;
+  padding: 10px;
+  margin-top: 30px;
+  border-radius: 10px;
+}
+
+.form-control {
+  font-family: "Manrope", sans-serif;
+  border: none;
+  padding: 15px;
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.research-btn {
+  background: #1b1b1b;
+  color: white;
+  padding: 15px 15px;
+  border-radius: 10px !important;
+}
+
+.research-btn img {
+  width: 40px;
+}
+
+/* -------------------- Filters --------------------- */
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  width: 90%;
+  flex-direction: row;
+  margin-top: 300px;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.filter-active {
+  background: #ffd15b;
+  display: flex;
+  align-items: center;
+  border: none;
+  color: #111111;
+  padding: 25px;
+  margin: 0 25px 0 45px;
+  border-radius: 15px;
+  font-family: "Manrope", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.filter-active button {
+  border: none;
+  background: #ffd15b;
+}
+
+.filter-active p {
+  margin-bottom: 0;
+  margin-right: 70px;
+}
+
+.filter-active i {
+  font-size: 25px;
+}
+
+.active-filters-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 90%;
+  margin-bottom: 70px;
+}
+
+.filter-dropdowns {
+  display: flex;
+  flex-direction: row;
+}
+
+.dropdown {
+  width: 250px;
+  margin-right: 80px;
+}
+
+.dropdown button {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: none;
+  color: #111111;
+  padding: 25px;
+  border-radius: 15px;
+  font-family: "Manrope", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.dropdown button:first-child {
+  margin-left: 40px;
+}
+
+.dropdown button p {
+  margin: 0;
+  margin-right: 70px;
+}
+
+.dropdown button i {
+  font-size: 20px;
+}
+
+.dropdown button:hover {
+  background: #fff;
+  color: #111111;
+}
+
+.dropdown-items {
+  width: 100%;
+  margin-top: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-bottom: 20px;
+}
+
+.dropdown-item {
+  padding: 5px 25px;
+}
+
+.dropdown-item:hover {
+  background: #ffd15b;
+}
+
+.dropdown-active-items {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  width: 100%;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.dropdown-active-items li {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 25px;
+  background: #ffd15b;
+}
+
+.dropdown-active-items p {
+  margin: 0;
+  font-weight: 500;
+  text-shadow: 0 0 0 transparent;
+  transition: text-shadow 0.5s ease;
+}
+
+.dropdown-active-items button {
+  background: #1b1b1b;
+  color: #ffd15b;
+  padding: 5px 7px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.dropdown-active-items:hover button {
+  opacity: 1;
+}
+
+.dropdown-active-items:hover p {
+  text-shadow: 0 0 1px #000;
+}
+
+.dropdown-active-items button i {
+  font-size: 14px;
+}
+
+.dropdown-menu {
+  width: 100%;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 40px;
+  top: 55px;
+  border: none;
+  max-height: 400px;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.dropdown-menu .input-group {
+  width: 85%;
+  border: 1px solid #7a7a7a;
+  border-radius: 0;
+}
+
+.dropdown-menu .form-control {
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-menu .form-control:focus {
+  border: none;
+  outline: 0;
+  box-shadow: none;
+}
+
+.dropdown-menu .input-group button {
+  padding: 0;
+}
+
+.dropdown-menu .input-group button img {
+  width: 20px;
+  margin-left: 5px;
+  height: auto;
+}
+
+.dropdown-menu.show {
+  display: flex;
+}
+
+.dropdown-toggle {
+  width: 100%;
+}
+
+.dropdown-toggle:after {
+  display: none;
+}
+
+.number-recipe {
+  font-family: "Anton", sans-serif;
+  font-size: 30px;
+  margin-right: 120px;
+}
+/* -------------------- Gallery --------------------- */
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  gap: 80px;
+}
+
+.card {
+  position: relative;
+  width: 26%;
+  border-radius: 25px;
+}
+
+.card img {
+  width: 100%;
+  height: 300px;
+  border-radius: 25px 25px 0 0;
+  object-fit: cover;
+  object-position: center;
+}
+
+.time {
+  position: absolute;
+  text-align: center;
+  top: 25px;
+  right: 25px;
+  background: #ffd15b;
+  padding: 5px 20px;
+  border-radius: 50px;
+}
+
+.card-body {
+  margin: 20px;
+}
+
+.card-text h2 {
+  color: #000;
+  font-family: "Anton", sans-serif;
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+
+.card-recipe h3,
+.card-ingredient h3 {
+  color: #7a7a7a;
+  font-family: "Manrope", sans-serif;
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 1.08px;
+  text-transform: uppercase;
+}
+
+.card-recipe p {
+  color: #1b1b1b;
+  margin-bottom: 50px;
+  font-family: "Manrope", sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  display: -webkit-box;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ingredient-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ingredient {
+  margin-bottom: 20px;
+}
+
+.ingredient h4 {
+  font-family: "Manrope", sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin-bottom: 0;
+}
+
+.ingredient p {
+  color: #7a7a7a;
+  font-family: "Manrope", sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.no-recipes {
+  font-family: "Manrope", sans-serif;
+  font-size: 18px;
+  color: red;
+  margin-bottom: 50px;
+}
