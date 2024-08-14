@@ -107,7 +107,26 @@ export function refreshDropdownItems(
   activeItemsContainer.innerHTML = activeItemsHTML;
 
   // Mise à jour de la liste des éléments disponibles après modification des filtres actifs
-  filterDropdownItems(items, searchInput, dropdownItemContainer, filterType);
+  const filteredItems = items.filter(
+    (item) =>
+      item.toLowerCase().includes(searchInput.value.toLowerCase()) &&
+      !globalResearchResults.advancedFilterResults.some(
+        (filter) =>
+          filter.item === item.toLowerCase() && filter.type === filterType
+      )
+  );
+
+  // Générer le HTML pour les items filtrés et les insérer dans le conteneur
+  dropdownItemContainer.innerHTML = filteredItems
+    .map((item) => `<li><a class="dropdown-item" href="#">${item}</a></li>`)
+    .join("");
+
+  researchDropdown(
+    searchInput,
+    filteredItems,
+    dropdownItemContainer,
+    filterType
+  );
 
   // Ajouter des écouteurs d'événements pour les boutons de suppression des filtres
   activeItemsContainer.querySelectorAll(".filter-delete").forEach((button) => {
@@ -240,11 +259,7 @@ export function initializeDropdown(config, items) {
     ); // Gère les clics sur les éléments avec le type spécifié
   });
 
-  searchInput.addEventListener(
-    "input",
-    () =>
-      filterDropdownItems(items, searchInput, dropdownItemContainer, filterType) // Corrige l'ordre des paramètres ici
-  );
+  researchDropdown(searchInput, items, dropdownItemContainer, filterType);
 
   return dropdown; // Retourne le menu déroulant créé
 }
@@ -316,4 +331,23 @@ export function extractUniqueItems(recipes, key) {
 
     return acc;
   }, []);
+}
+
+/**
+ *
+ * @param {*} searchInput - L'élément de saisie de recherche.
+ * @param {*} items - La liste des éléments du menu déroulant.
+ * @param {*} dropdownItemContainer - Le conteneur des éléments du menu déroulant.
+ * @param {*} filterType - Le type de filtre appliqué.
+ */
+function researchDropdown(
+  searchInput,
+  items,
+  dropdownItemContainer,
+  filterType
+) {
+  searchInput.addEventListener("input", () => {
+    console.log("Touche appuyée");
+    filterDropdownItems(items, searchInput, dropdownItemContainer, filterType);
+  });
 }
