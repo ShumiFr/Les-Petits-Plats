@@ -25,7 +25,9 @@ export function filterRecipesByKeyword(keyword, recipes) {
 
   return recipes.filter((recipe) => {
     const isInName = recipe.name.toLowerCase().includes(lowerCaseKeyword);
-    const isInDescription = recipe.description.toLowerCase().includes(lowerCaseKeyword);
+    const isInDescription = recipe.description
+      .toLowerCase()
+      .includes(lowerCaseKeyword);
     const isInIngredients = recipe.ingredients.some((ingredient) => {
       return ingredient.ingredient.toLowerCase().includes(lowerCaseKeyword);
     });
@@ -42,7 +44,6 @@ export function filterRecipesByKeyword(keyword, recipes) {
  */
 export function filterRecipesByCriteria(filterCriteria, recipes) {
   return recipes.filter((recipe) => {
-    console.log("filterCriteria", filterCriteria)
     return filterCriteria.every((criteria) => {
       const filter = criteria.item.toLowerCase();
       let matchesFilter = false;
@@ -101,12 +102,18 @@ export function performGlobalSearch() {
 
   let searchResults;
   if (globalResearchResults.searchBarResults.length >= 3) {
-    searchResults = filterRecipesByKeyword(globalResearchResults.searchBarResults, recipes);
+    searchResults = filterRecipesByKeyword(
+      globalResearchResults.searchBarResults,
+      recipes
+    );
   } else {
     searchResults = recipes;
   }
 
-  searchResults = filterRecipesByCriteria(globalResearchResults.advancedFilterResults, searchResults);
+  searchResults = filterRecipesByCriteria(
+    globalResearchResults.advancedFilterResults,
+    searchResults
+  );
 
   const ingredients = searchResults.reduce((acc, recipe) => {
     recipe.ingredients.forEach((ingredient) => {

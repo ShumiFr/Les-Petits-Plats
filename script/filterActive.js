@@ -1,5 +1,8 @@
 import { strUcFirst } from "./utils.js";
-import { globalResearchResults, performGlobalSearch } from "./researchResults.js";
+import {
+  globalResearchResults,
+  performGlobalSearch,
+} from "./researchResults.js";
 import { refreshDropdownItems } from "./libs.js";
 
 /* ----------------- Création des fonctions ----------------- */
@@ -13,9 +16,18 @@ import { refreshDropdownItems } from "./libs.js";
  * @param {HTMLElement} dropdownItemContainer - Le conteneur des éléments du menu déroulant.
  * @param {string} type - Le type de filtre.
  */
-export function createActiveFilter(keyword, items, dropdown, input, dropdownItemContainer, type) {
+export function createActiveFilter(
+  keyword,
+  items,
+  dropdown,
+  input,
+  dropdownItemContainer,
+  type
+) {
   const keywordUcFirst = strUcFirst(keyword);
-  const activeFiltersContainer = document.querySelector(".active-filters-container");
+  const activeFiltersContainer = document.querySelector(
+    ".active-filters-container"
+  );
 
   // Créer le conteneur du filtre actif
   const filterDiv = document.createElement("div");
