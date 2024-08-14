@@ -12,7 +12,10 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
-    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
+      rel="stylesheet"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
       rel="stylesheet"
@@ -37,16 +40,23 @@
         alt="Photo d'un plat"
       />
       <div class="first-section-content">
-        <h1>Cherchez parmi plus de 1500 recettes du quotidien, simples et délicieuses</h1>
+        <h1>
+          Cherchez parmi plus de 1500 recettes du quotidien, simples et
+          délicieuses
+        </h1>
         <div class="input-group bg-white">
           <input
             type="text"
             class="form-control"
             placeholder="Rechercher une recette, un ingrédient, ..."
             aria-label="Barre de recherche"
-            aria-describedby="bouton"
+            aria-describedby="search-button"
           />
-          <button class="research-btn btn border-0" type="button">
+          <button
+            id="search-button"
+            class="research-btn btn border-0"
+            type="button"
+          >
             <img src="./assets/loupe.svg" alt="loupe" />
           </button>
         </div>
@@ -57,6 +67,7 @@
     <!-- Main -->
     <main>
       <section class="filters">
+        <h2 class="ignore">Filtres</h2>
         <div class="filter">
           <div class="filter-dropdowns"></div>
           <div class="number-recipe">1500 recettes</div>
@@ -64,12 +75,16 @@
         <div class="active-filters-container"></div>
       </section>
       <section>
+        <h2 class="ignore">Galerie de Recettes</h2>
         <div class="gallery"></div>
       </section>
     </main>
     <!-- Main -->
+    <script
+      src="https://kit.fontawesome.com/6983cb12c1.js"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="./script/card.js"></script>
+    <script type="module" src="./script/dropdown.js"></script>
   </body>
-  <script src="https://kit.fontawesome.com/6983cb12c1.js" crossorigin="anonymous"></script>
-  <script type="module" src="./script/card.js"></script>
-  <script type="module" src="./script/dropdown.js"></script>
 </html>

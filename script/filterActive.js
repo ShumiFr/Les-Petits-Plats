@@ -1,6 +1,6 @@
 import { strUcFirst } from "./utils.js";
 import { globalResearchResults, performGlobalSearch } from "./researchResults.js";
-import { refreshDropdownItems } from "./dropdown.js";
+import { refreshDropdownItems } from "./libs.js";
 
 /* ----------------- Création des fonctions ----------------- */
 

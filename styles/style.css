@@ -379,9 +379,6 @@ ul {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  display: -webkit-box;
-  line-clamp: 4;
-  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -418,4 +415,8 @@ ul {
   font-size: 18px;
   color: red;
   margin-bottom: 50px;
+}
+
+.ignore {
+  display: none;
 }

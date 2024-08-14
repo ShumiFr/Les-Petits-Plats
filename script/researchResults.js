@@ -1,6 +1,6 @@
 import { recipes } from "./recipes.js";
-import { createCard } from "./card.js";
-import { updateDropdown } from "./dropdown.js";
+import { createRecipeDivElement } from "./card.js";
+import { updateDropdown } from "./libs.js";
 import { strUcFirst } from "./utils.js";
 
 // Sélectionne l'élément DOM du champ de recherche
@@ -42,6 +42,7 @@ export function filterRecipesByKeyword(keyword, recipes) {
  */
 export function filterRecipesByCriteria(filterCriteria, recipes) {
   return recipes.filter((recipe) => {
+    console.log("filterCriteria", filterCriteria)
     return filterCriteria.every((criteria) => {
       const filter = criteria.item.toLowerCase();
       let matchesFilter = false;
@@ -84,7 +85,7 @@ export function reconstructDOM(recipes) {
     numberRecipe.textContent = "0 recettes";
   } else {
     recipes.forEach((recipe) => {
-      const cardHTML = createCard(recipe);
+      const cardHTML = createRecipeDivElement(recipe);
       gallery.innerHTML += cardHTML;
     });
 
@@ -98,16 +99,16 @@ export function reconstructDOM(recipes) {
 export function performGlobalSearch() {
   globalResearchResults.searchBarResults = searchInput.value.toLowerCase();
 
-  let d1;
+  let searchResults;
   if (globalResearchResults.searchBarResults.length >= 3) {
-    d1 = filterRecipesByCriteria(globalResearchResults.searchBarResults, recipes);
+    searchResults = filterRecipesByKeyword(globalResearchResults.searchBarResults, recipes);
   } else {
-    d1 = recipes;
+    searchResults = recipes;
   }
 
-  const d2 = filterRecipesByCriteria(globalResearchResults.advancedFilterResults, d1);
+  searchResults = filterRecipesByCriteria(globalResearchResults.advancedFilterResults, searchResults);
 
-  const ingredients = d2.reduce((acc, recipe) => {
+  const ingredients = searchResults.reduce((acc, recipe) => {
     recipe.ingredients.forEach((ingredient) => {
       const capitalizedIngredient = strUcFirst(ingredient.ingredient);
       if (!acc.includes(capitalizedIngredient)) {
@@ -117,7 +118,7 @@ export function performGlobalSearch() {
     return acc;
   }, []);
 
-  const utensils = d2.reduce((acc, recipe) => {
+  const utensils = searchResults.reduce((acc, recipe) => {
     recipe.ustensils.forEach((utensil) => {
       const capitalizedUtensil = strUcFirst(utensil);
       if (!acc.includes(capitalizedUtensil)) {
@@ -127,7 +128,7 @@ export function performGlobalSearch() {
     return acc;
   }, []);
 
-  const appliances = d2.reduce((acc, recipe) => {
+  const appliances = searchResults.reduce((acc, recipe) => {
     const capitalizedAppliance = strUcFirst(recipe.appliance);
     if (!acc.includes(capitalizedAppliance)) {
       acc.push(capitalizedAppliance);
@@ -135,12 +136,11 @@ export function performGlobalSearch() {
     return acc;
   }, []);
 
-  // Sans ça
   updateDropdown("Ingrédients", ingredients);
   updateDropdown("Ustensiles", utensils);
   updateDropdown("Appareils", appliances);
 
-  reconstructDOM(d2);
+  reconstructDOM(searchResults);
 }
 
 /* ----------------- Appels des fonctions ----------------- */
